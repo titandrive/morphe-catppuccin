@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / '.cache' / 'catppuccin'
 BUILD = ROOT / 'build' / 'catppuccin'
 SOURCES = [
+    ROOT / 'patches/src/main/kotlin/app/morphe/patches/maps/theme/CatppuccinMapsPatch.kt',
     ROOT / 'patches/src/main/kotlin/app/morphe/patches/reddit/customclients/boostforreddit/theme/CatppuccinThemePatch.kt',
     ROOT / 'patches/src/main/kotlin/app/morphe/patches/gboard/theme/CatppuccinGboardPatch.kt',
     ROOT / 'patches/src/main/kotlin/app/morphe/patches/gboard/theme/CustomFontGboardPatch.kt',
@@ -58,6 +59,21 @@ def main():
         '-classpath', os.pathsep.join(map(str, (morphe, annotations))),
         '-language-version', '2.2', '-jvm-target', '11', '-d', classes, *SOURCES)
     bundle = ROOT / 'build/morphe-catppuccin-0.3.1.mpp'
+    maps_classes = BUILD / 'maps-extension'
+    if maps_classes.exists():
+        shutil.rmtree(maps_classes)
+    maps_classes.mkdir()
+    android_jar = sorted((sdk / 'platforms').glob('*/android.jar'))[-1]
+    d8 = sorted((sdk / 'build-tools').glob('*/lib/d8.jar'))[-1]
+    run(java_home / 'bin/javac', '-source', '8', '-target', '8', '-classpath', android_jar,
+        '-d', maps_classes, ROOT / 'tools/maps/src/app/morphe/extension/maps/MapsTheme.java')
+    maps_jar = BUILD / 'maps-extension.jar'
+    with zipfile.ZipFile(maps_jar, 'w') as archive:
+        for path in maps_classes.rglob('*.class'):
+            archive.write(path, path.relative_to(maps_classes))
+    maps_dex = BUILD / 'maps-extension.zip'
+    run(java, '-cp', d8, 'com.android.tools.r8.D8', '--release', '--min-api', '32',
+        '--lib', android_jar, '--output', maps_dex, maps_jar)
     manifest = ('Manifest-Version: 1.0\nName: Morphe - Catppuccin\n'
         'Description: Catppuccin themes for Boost and Gboard\nVersion: 0.3.1\n'
         'Author: titandrive\nSource: https://github.com/titandrive/morphe-catppuccin\n'
@@ -67,6 +83,8 @@ def main():
         for path in sorted(classes.rglob('*')):
             if path.is_file():
                 archive.write(path, path.relative_to(classes))
+        with zipfile.ZipFile(maps_dex) as extension:
+            archive.writestr('catppuccin/maps.dex', extension.read('classes.dex'))
         archive.write(ROOT / 'patches/src/main/resources/catppuccin/styles.xml', 'catppuccin/styles.xml')
         archive.write(ROOT / 'patches/src/main/resources/catppuccin/palette.xml', 'catppuccin/palette.xml')
         archive.write(ROOT / 'patches/src/main/resources/catppuccin/restore.xml', 'catppuccin/restore.xml')
@@ -76,7 +94,9 @@ def main():
     d8 = sorted((sdk / 'build-tools').glob('*/lib/d8.jar'))[-1]
     android_jar = sorted((sdk / 'platforms').glob('*/android.jar'))[-1]
     input_jar = BUILD / 'patches.jar'
-    shutil.copyfile(bundle, input_jar)
+    with zipfile.ZipFile(input_jar, 'w') as archive:
+        for path in sorted(classes.rglob('*.class')):
+            archive.write(path, path.relative_to(classes))
     run(java, '-cp', d8, 'com.android.tools.r8.D8',
         '--release', '--min-api', '26', '--lib', android_jar,
         '--classpath', morphe, '--output', dex, input_jar)
