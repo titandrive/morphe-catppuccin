@@ -57,9 +57,9 @@ def main():
         'org.jetbrains.kotlin.cli.jvm.K2JVMCompiler', '-no-stdlib', '-no-reflect',
         '-classpath', os.pathsep.join(map(str, (morphe, annotations))),
         '-language-version', '2.2', '-jvm-target', '11', '-d', classes, *SOURCES)
-    bundle = ROOT / 'build/morphe-catppuccin-0.3.0.mpp'
+    bundle = ROOT / 'build/morphe-catppuccin-0.3.1.mpp'
     manifest = ('Manifest-Version: 1.0\nName: Morphe - Catppuccin\n'
-        'Description: Catppuccin themes for Boost and Gboard\nVersion: 0.3.0\n'
+        'Description: Catppuccin themes for Boost and Gboard\nVersion: 0.3.1\n'
         'Author: titandrive\nSource: https://github.com/titandrive/morphe-catppuccin\n'
         'License: GPL-3.0 with upstream NOTICE conditions\n\n')
     with zipfile.ZipFile(bundle, 'w', zipfile.ZIP_DEFLATED) as archive:
