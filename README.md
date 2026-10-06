@@ -1,20 +1,20 @@
-# Boost - Catppuccin
+# Morphe - Catppuccin
 
-Adds **Catppuccin Latte (light)** and **Catppuccin Macchiato (dark)** to Boost **1.12.12**.
+Catppuccin themes for Boost and Gboard, patched with [Morphe Manager](https://morphe.software/).
 
-## Patch with Morphe
+Add `titandrive/morphe-catppuccin` as a remote patch source in Morphe.
 
-This is a theme add-on. **Apply it alongside the original [Patcheddit patches](https://github.com/wchill/patcheddit)**—it does not include their login/API fixes.
+## Boost
 
-1. In [Morphe Manager](https://morphe.software/), add both GitHub repositories as remote patch sources:
-   - `wchill/patcheddit`
-   - `titandrive/morphe-catppuccin`
-2. Select Boost 1.12.12, your normal Patcheddit patches, and **Catppuccin theme** from **Boost - Catppuccin**.
-3. Configure the original patches as described in Patcheddit's instructions, then patch and install.
+For **Boost 1.12.12**, apply **Catppuccin theme** alongside the original [Patcheddit patches](https://github.com/wchill/patcheddit). This add-on does not include their login/API fixes.
 
-## Enable a theme
+Open Boost’s theme selector and choose **Catppuccin Macchiato** (dark) or **Catppuccin Latte** (light).
 
-Open Boost's theme selector and choose **Catppuccin Latte** or **Catppuccin Macchiato**. The original themes remain available.
+## Gboard
+
+For **Gboard 18.4.1.985164140-release-arm64-v8a**, apply **Gboard Catppuccin theme**. No Patcheddit patches are needed.
+
+Open Gboard **Settings → Theme → Colors → Show more → Catppuccin Macchiato**. Choose **Key shape: None** for the borderless look, then **Apply**.
 
 ## Vibe-code disclosure
 

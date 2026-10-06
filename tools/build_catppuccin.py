@@ -14,7 +14,10 @@ import zipfile
 ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / '.cache' / 'catppuccin'
 BUILD = ROOT / 'build' / 'catppuccin'
-SOURCE = ROOT / 'patches/src/main/kotlin/app/morphe/patches/reddit/customclients/boostforreddit/theme/CatppuccinThemePatch.kt'
+SOURCES = [
+    ROOT / 'patches/src/main/kotlin/app/morphe/patches/reddit/customclients/boostforreddit/theme/CatppuccinThemePatch.kt',
+    ROOT / 'patches/src/main/kotlin/app/morphe/patches/gboard/theme/CatppuccinGboardPatch.kt',
+]
 MORPHE_VERSION = '1.18.0'
 KOTLIN_VERSION = '2.3.21'
 
@@ -52,10 +55,10 @@ def main():
     run(java, '-cp', os.pathsep.join(map(str, (compiler, morphe, annotations))),
         'org.jetbrains.kotlin.cli.jvm.K2JVMCompiler', '-no-stdlib', '-no-reflect',
         '-classpath', os.pathsep.join(map(str, (morphe, annotations))),
-        '-language-version', '2.2', '-jvm-target', '11', '-d', classes, SOURCE)
-    bundle = ROOT / 'build/boost-catppuccin-0.2.14.mpp'
-    manifest = ('Manifest-Version: 1.0\nName: Boost - Catppuccin\n'
-        'Description: Catppuccin themes for Boost\nVersion: 0.2.14\n'
+        '-language-version', '2.2', '-jvm-target', '11', '-d', classes, *SOURCES)
+    bundle = ROOT / 'build/morphe-catppuccin-0.3.0.mpp'
+    manifest = ('Manifest-Version: 1.0\nName: Morphe - Catppuccin\n'
+        'Description: Catppuccin themes for Boost and Gboard\nVersion: 0.3.0\n'
         'Author: titandrive\nSource: https://github.com/titandrive/morphe-catppuccin\n'
         'License: GPL-3.0 with upstream NOTICE conditions\n\n')
     with zipfile.ZipFile(bundle, 'w', zipfile.ZIP_DEFLATED) as archive:

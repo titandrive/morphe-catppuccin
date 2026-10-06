@@ -2,8 +2,8 @@ group = "app.morphe"
 
 patches {
     about {
-        name = "Boost Catppuccin"
-        description = "Catppuccin themes for Boost, based on Patcheddit"
+        name = "Morphe - Catppuccin"
+        description = "Catppuccin themes for Boost and Gboard"
         source = "https://github.com/titandrive/morphe-catppuccin"
         author = "titandrive (based on wchill)"
         contact = "https://github.com/titandrive/morphe-catppuccin/issues"
