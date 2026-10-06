@@ -77,8 +77,8 @@ private fun palette(source: ByteArray, colors: Map<String, Long>): ByteArray {
 }
 private fun metadata(source: ByteArray): ByteArray {
     val replacements = mapOf(
-        "style_sheet_google_blue_dark.binarypb" to "style_sheet_catppuccin_macchiato.binarypb",
-        "style_sheet_google_blue_dark_border.binarypb" to "style_sheet_catppuccin_macchiato_border.binarypb",
+        "style_sheet_google_blue_dark.binarypb" to "style_sheet_catppuccin_macchiato_feedback.binarypb",
+        "style_sheet_google_blue_dark_border.binarypb" to "style_sheet_catppuccin_macchiato_feedback_border.binarypb",
     )
     val out = ByteArrayOutputStream()
     for (field in fields(source)) {
@@ -109,12 +109,12 @@ val catppuccinGboardPatch = resourcePatch(
         roles(0xffcad3f5, "default_label_color", "color_state_label_candidate", "color_state_label_candidate_selected",
             "color_keyboard_editing_button", "default_label_color_variant", "default_borderless_key_dark_color_contrast")
         roles(0xffc6a0f6, "default_generic_accent_color", "default_generic_accent_color_strong",
-            "default_borderless_space_bar_color", "default_borderless_space_bar_color_hovered",
-            "default_borderless_space_bar_color_pressed",
+            "default_borderless_space_bar_color",
             "default_action_key_background_color", "color_bottom_indicator_active", "color_label_secondary",
             "color_label_dynamic", "color_expression_content_accented", "default_popup_item_color_pressed",
             "color_state_popup_item_pressed")
         roles(0xffb7bdf8, "default_generic_accent_color_pressed",
+            "default_borderless_space_bar_color_pressed", "default_borderless_space_bar_color_hovered",
             "default_action_key_background_color_pressed", "default_action_key_background_color_hovered")
         roles(0xff24273a, "default_generic_accent_color_contrast", "default_action_key_label_color")
         roles(0xff363a4f, "default_bordered_key_color", "default_bordered_key_dark_color",
@@ -125,17 +125,17 @@ val catppuccinGboardPatch = resourcePatch(
             "color_candidate_separator", "color_candidate_panel_separator", "color_expression_corpus_selector_background_active",
             "color_jarvis_background_active")
         roles(0xff494d64, "default_pill_shaped_key_color_pressed")
-        roles(0x00000000, "default_transparent_key_color_pressed", "default_transparent_key_color_hovered",
+        roles(0xff363a4f, "default_transparent_key_color_pressed", "default_transparent_key_color_hovered",
             "color_softkey_highlight_fill")
         val theme = "assets/theme/"
         for (suffix in listOf("", "_border")) {
             val source = get(theme + "style_sheet_google_blue_dark$suffix.binarypb")
             require(source.isFile) { "This Gboard APK has a different bundled theme format" }
-            get(theme + "style_sheet_catppuccin_macchiato$suffix.binarypb").writeBytes(palette(source.readBytes(), colors))
+            get(theme + "style_sheet_catppuccin_macchiato_feedback$suffix.binarypb").writeBytes(palette(source.readBytes(), colors))
         }
-        get(theme + "theme_package_metadata_catppuccin_macchiato.binarypb").writeBytes(
+        get(theme + "theme_package_metadata_catppuccin_macchiato_feedback.binarypb").writeBytes(
             metadata(get(theme + "theme_package_metadata_google_blue_dark.binarypb").readBytes()))
-        val spec = "assets:theme_package_metadata_catppuccin_macchiato.binarypb"
+        val spec = "assets:theme_package_metadata_catppuccin_macchiato_feedback.binarypb"
         document("res/values/strings.xml").use { xml ->
             for ((name, value) in mapOf("catppuccin_gboard_spec" to spec, "catppuccin_gboard_label" to "Catppuccin Macchiato")) {
                 val nodes = xml.documentElement.childNodes
