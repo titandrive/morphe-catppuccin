@@ -39,7 +39,7 @@ public final class MapsTheme {
 
     private static final class Refresh implements ViewTreeObserver.OnGlobalLayoutListener, Runnable {
         private final WeakReference<View> root;
-        private final int search, input, content, stream, title, footer, indicator, icon, smallLabel, largeLabel, textColor;
+        private final int search, input, content, stream, title, footer, appBar, indicator, icon, smallLabel, largeLabel, textColor;
         Refresh(View view) {
             root = new WeakReference<>(view);
             search = id(view, "mod_search_omnibox_layout");
@@ -48,6 +48,7 @@ public final class MapsTheme {
             stream = id(view, "scrollable_card_stream_container");
             title = id(view, "explore_tab_home_title_card");
             footer = id(view, "bottom_nav");
+            appBar = id(view, "mod_app_bar");
             indicator = id(view, "navigation_bar_item_active_indicator_view");
             icon = id(view, "navigation_bar_item_icon_view");
             smallLabel = id(view, "navigation_bar_item_small_label_view");
@@ -65,7 +66,8 @@ public final class MapsTheme {
             tint(find(view, content), BASE);
             tint(find(view, stream), BASE);
             tint(find(view, title), BASE);
-            panels(find(view, content));
+            panels(view);
+            tint(find(view, appBar), BASE);
             View navigation = find(view, footer);
             tint(navigation, MANTLE);
             tabs(navigation, indicator, icon, smallLabel, largeLabel);
@@ -120,13 +122,20 @@ public final class MapsTheme {
         else background.mutate().setTint(color);
         view.setTag(0x7e010001, view.getBackground());
     }
+    private static boolean pageNeutral(int color) {
+        return color == 0xff131314 || color == 0xff121212 || color == 0xff111111 ||
+            color == 0xff000000 || color == 0xff1f1f1f || color == 0xff202124;
+    }
     private static void panels(View view) {
         if (view == null) return;
         Drawable background = view.getBackground();
         if (background instanceof ColorDrawable) {
             int color = ((ColorDrawable) background).getColor();
-            if (color == 0xff131314 || color == 0xff121212 || color == 0xff000000 || color == 0xff1f1f1f)
-                ((ColorDrawable) background).setColor(BASE);
+            if (pageNeutral(color)) ((ColorDrawable) background).setColor(BASE);
+        }
+        if (background instanceof GradientDrawable) {
+            GradientDrawable fill = (GradientDrawable) background;
+            if (fill.getColor() != null && pageNeutral(fill.getColor().getDefaultColor())) fill.setColor(BASE);
         }
         if (view instanceof ViewGroup) {
             ViewGroup group = (ViewGroup) view;

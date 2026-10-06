@@ -81,6 +81,8 @@ private val mapsResources = resourcePatch {
             "color_surface_elevation_plus_two_dark" to SURFACE,
             "callout_nightmode_background" to SURFACE,
             "car_card_night" to BASE,
+            "og_background_dark" to BASE, "og_elevation_dark_2" to BASE,
+            "og_elevation_dark_5" to SURFACE, "og_material3_elevation_dark_2" to BASE,
             "background_material_dark" to BASE, "background_floating_material_dark" to SURFACE,
             "cardview_dark_background" to SURFACE,
             "directions_greentraffic_nightmode_text" to GREEN,
@@ -148,13 +150,15 @@ private val mapsResources = resourcePatch {
             }
         }
         var changed = 0
-        for (directory in listOf("values", "values-night")) {
+        for (folder in get("res").listFiles().orEmpty().filter { it.isDirectory && it.name.startsWith("values") && it.resolve("colors.xml").exists() }) {
+            val directory = folder.name
+            val night = directory.split('-').contains("night")
             document("res/$directory/colors.xml").use { xml ->
                 val nodes = xml.getElementsByTagName("color")
                 for (index in 0 until nodes.length) {
                     val color = nodes.item(index) as Element
                     val name = color.getAttribute("name")
-                    val dark = name.contains("_dynamic_dark_") || directory == "values-night" || name.startsWith("gm3_sys_color_dark_") || name.startsWith("gm3_dark_") || name.startsWith("gm_sys_color_dark_") || name.startsWith("google_dark_") || name.startsWith("design_dark_") || name.startsWith("m3_sys_color_dark_") || name.startsWith("gm3_legacy_sys_color_dark_")
+                    val dark = name.contains("_dynamic_dark_") || night || name.startsWith("gm3_sys_color_dark_") || name.startsWith("gm3_dark_") || name.startsWith("gm_sys_color_dark_") || name.startsWith("google_dark_") || name.startsWith("design_dark_") || name.startsWith("m3_sys_color_dark_") || name.startsWith("gm3_legacy_sys_color_dark_")
                     val role = when {
                         name.startsWith("gm3_sys_color_dynamic_dark_") -> name.removePrefix("gm3_sys_color_dynamic_dark_")
                         name.startsWith("gm3_sys_color_dynamic_light_") -> name.removePrefix("gm3_sys_color_dynamic_light_")
@@ -182,8 +186,8 @@ private val mapsResources = resourcePatch {
                         name.startsWith("gm3_dark_legacy_color_") -> name.removePrefix("gm3_dark_legacy_color_")
                         else -> null
                     }
-                    val replacement = (if (directory == "values") dayLegacy[name] else null) ?: legacy[name] ?: role?.let { themedRole(it, dark) }
-                        ?: if (directory == "values-night") nightLiterals[color.textContent.trim().lowercase()] else null
+                    val replacement = (if (!night) dayLegacy[name] else null) ?: legacy[name] ?: role?.let { themedRole(it, dark) }
+                        ?: if (night) nightLiterals[color.textContent.trim().lowercase()] else null
                     if (replacement != null) {
                         color.textContent = replacement; changed++
                     }
