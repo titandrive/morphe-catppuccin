@@ -56,7 +56,7 @@ def main():
     bundle = ROOT / 'build/boost-catppuccin-0.2.14.mpp'
     manifest = ('Manifest-Version: 1.0\nName: Boost - Catppuccin\n'
         'Description: Catppuccin themes for Boost\nVersion: 0.2.14\n'
-        'Author: titandrive\nSource: https://github.com/titandrive/boost-catppuccin\n'
+        'Author: titandrive\nSource: https://github.com/titandrive/morphe-catppuccin\n'
         'License: GPL-3.0 with upstream NOTICE conditions\n\n')
     with zipfile.ZipFile(bundle, 'w', zipfile.ZIP_DEFLATED) as archive:
         archive.writestr('META-INF/MANIFEST.MF', manifest)

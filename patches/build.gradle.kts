@@ -4,10 +4,10 @@ patches {
     about {
         name = "Boost Catppuccin"
         description = "Catppuccin themes for Boost, based on Patcheddit"
-        source = "https://github.com/titandrive/boost-catppuccin"
+        source = "https://github.com/titandrive/morphe-catppuccin"
         author = "titandrive (based on wchill)"
-        contact = "https://github.com/titandrive/boost-catppuccin/issues"
-        website = "https://github.com/titandrive/boost-catppuccin"
+        contact = "https://github.com/titandrive/morphe-catppuccin/issues"
+        website = "https://github.com/titandrive/morphe-catppuccin"
         license = "Additional conditions under GPL section 7 apply: attribution and project name restrictions. See LICENSE file."
     }
 }
