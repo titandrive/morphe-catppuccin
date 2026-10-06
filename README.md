@@ -16,6 +16,8 @@ For **Gboard 18.4.1.985164140-release-arm64-v8a**, apply **Gboard Catppuccin the
 
 Open Gboard **Settings → Theme → Colors → Show more → Catppuccin Macchiato**. Choose **Key shape: None** for the borderless look, then **Apply**.
 
+For a custom font, also select **Gboard custom font**, open its options, and choose a **TTF file**. Switch fonts in **Gboard Settings → Preferences → Font**.
+
 ## Vibe-code disclosure
 
 This project is vibe-coded with AI assistance from OpenAI Codex.

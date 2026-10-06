@@ -17,6 +17,7 @@ BUILD = ROOT / 'build' / 'catppuccin'
 SOURCES = [
     ROOT / 'patches/src/main/kotlin/app/morphe/patches/reddit/customclients/boostforreddit/theme/CatppuccinThemePatch.kt',
     ROOT / 'patches/src/main/kotlin/app/morphe/patches/gboard/theme/CatppuccinGboardPatch.kt',
+    ROOT / 'patches/src/main/kotlin/app/morphe/patches/gboard/theme/CustomFontGboardPatch.kt',
 ]
 MORPHE_VERSION = '1.18.0'
 KOTLIN_VERSION = '2.3.21'
