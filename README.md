@@ -8,7 +8,7 @@ This is a theme add-on. **Apply it alongside the original [Patcheddit patches](h
 
 1. In [Morphe Manager](https://morphe.software/), add both GitHub repositories as remote patch sources:
    - `wchill/patcheddit`
-   - `titandrive/boost-catppuccin`
+   - `titandrive/morphe-catppuccin`
 2. Select Boost 1.12.12, your normal Patcheddit patches, and **Catppuccin theme** from **Boost - Catppuccin**.
 3. Configure the original patches as described in Patcheddit's instructions, then patch and install.
 
