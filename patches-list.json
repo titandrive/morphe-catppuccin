@@ -1,5 +1,5 @@
 {
-  "version": "0.2.14",
+  "version": "0.3.0",
   "patches": [
     {
       "name": "Catppuccin theme",
@@ -12,6 +12,39 @@
         ]
       },
       "options": []
+    },
+    {
+      "name": "Gboard Catppuccin theme",
+      "description": "Adds a Macchiato keyboard theme with mauve accents, inspired by HeliBoard.",
+      "use": false,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.4.1.985164140-release-arm64-v8a"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Gboard custom font",
+      "description": "Imports a TTF font and adds it to Gboard's Font selector.",
+      "use": false,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.google.android.inputmethod.latin": [
+          "18.4.1.985164140-release-arm64-v8a"
+        ]
+      },
+      "options": [
+        {
+          "key": "font-file",
+          "title": "Custom TTF font",
+          "description": "TTF file path. Choose the font file to embed in the keyboard. Required when this patch is selected.",
+          "type": "kotlin.String",
+          "required": true,
+          "default": null
+        }
+      ]
     }
   ]
 }
