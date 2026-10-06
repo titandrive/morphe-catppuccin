@@ -207,6 +207,21 @@ val catppuccinMapsPatch = bytecodePatch(
         val resume = mutableClassDefBy("Lnbm;").methods.single { it.name == "onResume" }
         resume.addInstruction(0,
             "invoke-static/range {p0 .. p0}, Lapp/morphe/extension/maps/MapsTheme;->attach(Landroid/app/Activity;)V")
+        // Maps clears its GL canvas separately from Android theme backgrounds.
+        val renderer = mutableClassDefBy("Lbkxw;")
+        var clearCalls = 0
+        renderer.methods.forEach { method ->
+            method.implementation?.instructions?.forEachIndexed { index, instruction ->
+                if (instruction is com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction &&
+                    instruction.reference.toString() == "Landroid/opengl/GLES20;->glClearColor(FFFF)V") {
+                    val call = instruction as com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction
+                    method.replaceInstruction(index, "invoke-static {v${call.registerC}, v${call.registerD}, v${call.registerE}, v${call.registerF}}, Lapp/morphe/extension/maps/MapsTheme;->clearMapColor(FFFF)V")
+                    clearCalls++
+                }
+            }
+        }
+        require(clearCalls == 1) { "Maps' renderer clear-color call has changed." }
+
         // Compose's fallback Material scheme supplies backgrounds in several cards.
         val material = mutableClassDefBy("Lblru;").methods.single { it.name == "P" }
         val constructorIndex = material.implementation!!.instructions.indexOfFirst {
