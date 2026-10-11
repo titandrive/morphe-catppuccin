@@ -5,7 +5,7 @@ import app.morphe.patcher.patch.Compatibility
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.patch.resourcePatch
-import app.morphe.patcher.patch.stringOption
+import app.morphe.patcher.patch.filePathOption
 import app.morphe.patches.shared.fonts.readTrueType
 import org.w3c.dom.Element
 
@@ -17,10 +17,10 @@ val customFontBoostPatch = bytecodePatch(
 ) {
     compatibleWith(Compatibility(name = "Boost for Reddit", packageName = "com.rubenmayayo.reddit",
         targets = listOf(AppTarget(version = "1.12.12"))))
-    val fontFile = stringOption(
+    val fontFile = filePathOption(
         key = "font-file", default = null, title = "Custom TTF font",
         description = "Choose a TTF file to embed as Boost's font. Repatch to change or remove it.",
-        required = true,
+        required = true, allowedExtensions = listOf("ttf"),
     )
     dependsOn(resourcePatch {
         execute {

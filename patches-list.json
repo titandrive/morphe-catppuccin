@@ -1,5 +1,5 @@
 {
-  "version": "0.3.2",
+  "version": "0.3.3",
   "patches": [
     {
       "name": "Catppuccin theme",
@@ -30,7 +30,10 @@
           "description": "Choose a TTF file to embed as Boost's font. Repatch to change or remove it.",
           "type": "kotlin.String",
           "required": true,
-          "default": null
+          "default": null,
+          "allowedExtensions": [
+            "ttf"
+          ]
         }
       ]
     },
@@ -63,7 +66,10 @@
           "description": "TTF file path. Choose the font file to embed in the keyboard. Required when this patch is selected.",
           "type": "kotlin.String",
           "required": true,
-          "default": null
+          "default": null,
+          "allowedExtensions": [
+            "ttf"
+          ]
         }
       ]
     }

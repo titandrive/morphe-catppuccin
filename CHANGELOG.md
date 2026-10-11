@@ -1,3 +1,10 @@
+# [0.3.3](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.3.3) (2026-10-11)
+
+### Fixes
+
+* **Boost for Reddit:** Use the native TTF file picker instead of a text-path field.
+* **Gboard:** Use the native TTF file picker for custom fonts.
+
 # [0.3.2](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.3.2) (2026-10-11)
 
 ### Features

@@ -63,7 +63,7 @@ def main():
         'org.jetbrains.kotlin.cli.jvm.K2JVMCompiler', '-no-stdlib', '-no-reflect',
         '-classpath', os.pathsep.join(map(str, (morphe, annotations))),
         '-language-version', '2.2', '-jvm-target', '11', '-d', classes, *SOURCES)
-    bundle = ROOT / 'build/morphe-catppuccin-0.3.2.mpp'
+    bundle = ROOT / 'build/morphe-catppuccin-0.3.3.mpp'
     maps_classes = BUILD / 'maps-extension'
     if maps_classes.exists():
         shutil.rmtree(maps_classes)
@@ -80,7 +80,7 @@ def main():
     run(java, '-cp', d8, 'com.android.tools.r8.D8', '--release', '--min-api', '32',
         '--lib', android_jar, '--output', maps_dex, maps_jar)
     manifest = ('Manifest-Version: 1.0\nName: Morphe - Catppuccin\n'
-        'Description: Catppuccin themes for Boost and Gboard\nVersion: 0.3.2\n'
+        'Description: Catppuccin themes for Boost and Gboard\nVersion: 0.3.3\n'
         'Author: titandrive\nSource: https://github.com/titandrive/morphe-catppuccin\n'
         'License: GPL-3.0 with upstream NOTICE conditions\n\n')
     with zipfile.ZipFile(bundle, 'w', zipfile.ZIP_DEFLATED) as archive:

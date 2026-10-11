@@ -4,7 +4,7 @@ import app.morphe.patcher.patch.AppTarget
 import app.morphe.patcher.patch.Compatibility
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.patch.resourcePatch
-import app.morphe.patcher.patch.stringOption
+import app.morphe.patcher.patch.filePathOption
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructionsWithLabels
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod.Companion.toMutable
 import app.morphe.patcher.util.proxy.mutableTypes.MutableField.Companion.toMutable
@@ -25,10 +25,10 @@ val customFontGboardPatch = bytecodePatch(
 ) {
     compatibleWith(Compatibility(name = "Gboard", packageName = "com.google.android.inputmethod.latin",
         targets = listOf(AppTarget(version = "18.4.1.985164140-release-arm64-v8a"))))
-    val fontFile = stringOption(
+    val fontFile = filePathOption(
         key = "font-file", default = null, title = "Custom TTF font",
         description = "TTF file path. Choose the font file to embed in the keyboard. Required when this patch is selected.",
-        required = true,
+        required = true, allowedExtensions = listOf("ttf"),
     )
     dependsOn(resourcePatch {
         execute {
