@@ -1,5 +1,5 @@
 {
-  "version": "0.3.1",
+  "version": "0.3.2",
   "patches": [
     {
       "name": "Catppuccin theme",
@@ -12,6 +12,27 @@
         ]
       },
       "options": []
+    },
+    {
+      "name": "Boost custom font",
+      "description": "Uses your TTF font throughout Boost, preserving bold and italic text. No in-app font selector.",
+      "use": false,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.rubenmayayo.reddit": [
+          "1.12.12"
+        ]
+      },
+      "options": [
+        {
+          "key": "font-file",
+          "title": "Custom TTF font",
+          "description": "Choose a TTF file to embed as Boost's font. Repatch to change or remove it.",
+          "type": "kotlin.String",
+          "required": true,
+          "default": null
+        }
+      ]
     },
     {
       "name": "Gboard Catppuccin theme",

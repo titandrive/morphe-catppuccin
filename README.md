@@ -10,6 +10,8 @@ For **Boost 1.12.12**, apply **Catppuccin theme** alongside the original [Patche
 
 Open Boost’s theme selector and choose **Catppuccin Macchiato** (dark) or **Catppuccin Latte** (light).
 
+For a custom font, also select **Boost custom font**, open its options, and choose a **TTF file**. The font applies throughout Boost with no in-app selector. Repatch to change it; omit the font patch to restore the original fonts.
+
 ## Gboard
 
 For **Gboard 18.4.1.985164140-release-arm64-v8a**, apply **Gboard Catppuccin theme**. No Patcheddit patches are needed.
