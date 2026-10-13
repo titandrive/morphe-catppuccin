@@ -1,0 +1,85 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+:root, :root.night-mode {
+  --fg: #4c4f69 !important;
+  --fg-subtle: #6c6f85 !important;
+  --fg-disabled: #9ca0b0 !important;
+  --fg-faint: #8c8fa1 !important;
+  --fg-link: #1e66f5 !important;
+  --canvas: #eff1f5 !important;
+  --canvas-elevated: #e6e9ef !important;
+  --canvas-inset: #eff1f5 !important;
+  --canvas-overlay: #ccd0da !important;
+  --canvas-code: #e6e9ef !important;
+  --canvas-glass: #ccd0da !important;
+  --border: #acb0be !important;
+  --border-subtle: #bcc0cc !important;
+  --border-strong: #9ca0b0 !important;
+  --border-focus: #8839ef !important;
+  --button-bg: #ccd0da !important;
+  --button-gradient-start: #ccd0da !important;
+  --button-gradient-end: #ccd0da !important;
+  --button-hover-border: #8839ef !important;
+  --button-disabled: #bcc0cc !important;
+  --button-primary-bg: #8839ef !important;
+  --button-primary-gradient-start: #8839ef !important;
+  --button-primary-gradient-end: #8839ef !important;
+  --button-primary-disabled: #acb0be !important;
+  --scrollbar-bg: #ccd0da !important;
+  --scrollbar-bg-hover: #bcc0cc !important;
+  --scrollbar-bg-active: #acb0be !important;
+  --shadow: #dce0e8 !important;
+  --shadow-inset: #dce0e8 !important;
+  --shadow-subtle: #e6e9ef !important;
+  --shadow-focus: #8839ef !important;
+  --accent-card: #1e66f5 !important;
+  --accent-note: #40a02b !important;
+  --accent-danger: #d20f39 !important;
+  --state-new: #1e66f5 !important;
+  --state-learn: #d20f39 !important;
+  --state-review: #40a02b !important;
+  --state-buried: #fe640b !important;
+  --state-suspended: #df8e1d !important;
+  --state-marked: #8839ef !important;
+  --highlight-bg: #acb0be !important;
+  --highlight-fg: #4c4f69 !important;
+  --selected-bg: #acb0be !important;
+  --selected-fg: #4c4f69 !important;
+}
+html, body { background-color: #eff1f5; color: #4c4f69; }
+.btn-primary { color: #eff1f5 !important; }
+:root, :root.night-mode, body {
+  --bs-body-bg: #eff1f5 !important;
+  --bs-body-bg-rgb: 239, 241, 245 !important;
+  --bs-body-color: #4c4f69 !important;
+  --bs-body-color-rgb: 76, 79, 105 !important;
+  --bs-secondary-color: #6c6f85 !important;
+  --bs-secondary-color-rgb: 108, 111, 133 !important;
+  --bs-tertiary-color: #9ca0b0 !important;
+  --bs-tertiary-color-rgb: 156, 160, 176 !important;
+  --bs-secondary-bg: #ccd0da !important;
+  --bs-secondary-bg-rgb: 204, 208, 218 !important;
+  --bs-tertiary-bg: #e6e9ef !important;
+  --bs-tertiary-bg-rgb: 230, 233, 239 !important;
+  --bs-emphasis-color: #4c4f69 !important;
+  --bs-emphasis-color-rgb: 76, 79, 105 !important;
+  --bs-border-color: #acb0be !important;
+  --bs-border-color-rgb: 172, 176, 190 !important;
+  --bs-primary: #8839ef !important;
+  --bs-primary-rgb: 136, 57, 239 !important;
+  --bs-secondary: #6c6f85 !important;
+  --bs-secondary-rgb: 108, 111, 133 !important;
+  --bs-success: #40a02b !important;
+  --bs-success-rgb: 64, 160, 43 !important;
+  --bs-danger: #d20f39 !important;
+  --bs-danger-rgb: 210, 15, 57 !important;
+  --bs-warning: #df8e1d !important;
+  --bs-warning-rgb: 223, 142, 29 !important;
+  --bs-info: #1e66f5 !important;
+  --bs-info-rgb: 30, 102, 245 !important;
+  --bs-link-color: #1e66f5 !important;
+  --bs-link-color-rgb: 30, 102, 245 !important;
+  --bs-link-hover-color: #7287fd !important;
+  --bs-link-hover-color-rgb: 114, 135, 253 !important;
+  --bs-card-bg: #e6e9ef !important;
+  --bs-card-bg-rgb: 230, 233, 239 !important;
+}

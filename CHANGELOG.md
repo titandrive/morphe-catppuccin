@@ -1,3 +1,16 @@
+# [0.4.0](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.4.0) (2026-10-13)
+
+### Features
+
+* **AnkiDroid 2.25.1:** Add Catppuccin Latte/Macchiato, bundled JetBrains Mono, custom TTF import, and 70–150% text sizing under Appearance.
+* Selected fonts override card template fonts in study and preview screens.
+
+### Validation
+
+* Apply both palettes to the Android 10+ theme variants as well as the base definitions.
+* Preserve the review WebView's superclass loader to prevent recursive loading crashes.
+* Verified native Macchiato colors, card font loading, opening a review, and showing the answer on-device.
+
 # [0.3.3](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.3.3) (2026-10-11)
 
 ### Fixes

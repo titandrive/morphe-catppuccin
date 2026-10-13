@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / '.cache' / 'catppuccin'
 BUILD = ROOT / 'build' / 'catppuccin'
 SOURCES = [
+    ROOT / "patches/src/main/kotlin/app/morphe/patches/anki/CatppuccinAnkiPatch.kt",
     ROOT / "patches/src/main/kotlin/app/morphe/patches/shared/fonts/TrueType.kt",
     ROOT / "patches/src/main/kotlin/app/morphe/patches/reddit/customclients/boostforreddit/theme/CustomFontBoostPatch.kt",
     ROOT / 'patches/src/main/kotlin/app/morphe/patches/reddit/customclients/boostforreddit/theme/CatppuccinThemePatch.kt',
@@ -24,6 +25,9 @@ SOURCES = [
 # Maps is still a draft; include it only in explicitly requested local test builds.
 if os.environ.get('CATPPUCCIN_INCLUDE_MAPS') == '1':
     SOURCES.append(ROOT / 'patches/src/main/kotlin/app/morphe/patches/maps/theme/CatppuccinMapsPatch.kt')
+
+if os.environ.get('CATPPUCCIN_ANKI_TEST') == '1':
+    SOURCES.append(ROOT / 'test/anki/TestIdentityPatch.kt')
 
 MORPHE_VERSION = '1.18.0'
 KOTLIN_VERSION = '2.3.21'
@@ -63,7 +67,7 @@ def main():
         'org.jetbrains.kotlin.cli.jvm.K2JVMCompiler', '-no-stdlib', '-no-reflect',
         '-classpath', os.pathsep.join(map(str, (morphe, annotations))),
         '-language-version', '2.2', '-jvm-target', '11', '-d', classes, *SOURCES)
-    bundle = ROOT / 'build/morphe-catppuccin-0.3.3.mpp'
+    bundle = ROOT / ('build/morphe-catppuccin-0.4.0-test.mpp' if os.environ.get('CATPPUCCIN_ANKI_TEST') == '1' else 'build/morphe-catppuccin-0.4.0.mpp')
     maps_classes = BUILD / 'maps-extension'
     if maps_classes.exists():
         shutil.rmtree(maps_classes)
@@ -79,8 +83,21 @@ def main():
     maps_dex = BUILD / 'maps-extension.zip'
     run(java, '-cp', d8, 'com.android.tools.r8.D8', '--release', '--min-api', '32',
         '--lib', android_jar, '--output', maps_dex, maps_jar)
+    anki_classes = BUILD / 'anki-extension'
+    if anki_classes.exists():
+        shutil.rmtree(anki_classes)
+    anki_classes.mkdir()
+    run(java_home / 'bin/javac', '-source', '8', '-target', '8', '-classpath', android_jar,
+        '-d', anki_classes, *sorted((ROOT / 'tools/anki/src').rglob('*.java')))
+    anki_jar = BUILD / 'anki-extension.jar'
+    with zipfile.ZipFile(anki_jar, 'w') as archive:
+        for path in anki_classes.rglob('*.class'):
+            archive.write(path, path.relative_to(anki_classes))
+    anki_dex = BUILD / 'anki-extension.zip'
+    run(java, '-cp', d8, 'com.android.tools.r8.D8', '--release', '--min-api', '24',
+        '--lib', android_jar, '--output', anki_dex, anki_jar)
     manifest = ('Manifest-Version: 1.0\nName: Morphe - Catppuccin\n'
-        'Description: Catppuccin themes for Boost and Gboard\nVersion: 0.3.3\n'
+        'Description: Catppuccin themes for Boost, Gboard, and AnkiDroid\nVersion: 0.4.0\n'
         'Author: titandrive\nSource: https://github.com/titandrive/morphe-catppuccin\n'
         'License: GPL-3.0 with upstream NOTICE conditions\n\n')
     with zipfile.ZipFile(bundle, 'w', zipfile.ZIP_DEFLATED) as archive:
@@ -90,6 +107,11 @@ def main():
                 archive.write(path, path.relative_to(classes))
         with zipfile.ZipFile(maps_dex) as extension:
             archive.writestr('catppuccin/maps.dex', extension.read('classes.dex'))
+        with zipfile.ZipFile(anki_dex) as extension:
+            archive.writestr('catppuccin/anki.dex', extension.read('classes.dex'))
+        for path in sorted((ROOT / 'patches/src/main/resources/catppuccin/anki').rglob('*')):
+            if path.is_file():
+                archive.write(path, 'catppuccin/anki/' + str(path.relative_to(ROOT / 'patches/src/main/resources/catppuccin/anki')))
         archive.write(ROOT / 'patches/src/main/resources/catppuccin/styles.xml', 'catppuccin/styles.xml')
         archive.write(ROOT / 'patches/src/main/resources/catppuccin/palette.xml', 'catppuccin/palette.xml')
         archive.write(ROOT / 'patches/src/main/resources/catppuccin/restore.xml', 'catppuccin/restore.xml')

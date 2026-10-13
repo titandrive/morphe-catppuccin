@@ -1,0 +1,85 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+:root, :root.night-mode {
+  --fg: #cad3f5 !important;
+  --fg-subtle: #a5adcb !important;
+  --fg-disabled: #6e738d !important;
+  --fg-faint: #8087a2 !important;
+  --fg-link: #8aadf4 !important;
+  --canvas: #24273a !important;
+  --canvas-elevated: #1e2030 !important;
+  --canvas-inset: #24273a !important;
+  --canvas-overlay: #363a4f !important;
+  --canvas-code: #1e2030 !important;
+  --canvas-glass: #363a4f !important;
+  --border: #5b6078 !important;
+  --border-subtle: #494d64 !important;
+  --border-strong: #6e738d !important;
+  --border-focus: #c6a0f6 !important;
+  --button-bg: #363a4f !important;
+  --button-gradient-start: #363a4f !important;
+  --button-gradient-end: #363a4f !important;
+  --button-hover-border: #c6a0f6 !important;
+  --button-disabled: #494d64 !important;
+  --button-primary-bg: #c6a0f6 !important;
+  --button-primary-gradient-start: #c6a0f6 !important;
+  --button-primary-gradient-end: #c6a0f6 !important;
+  --button-primary-disabled: #5b6078 !important;
+  --scrollbar-bg: #363a4f !important;
+  --scrollbar-bg-hover: #494d64 !important;
+  --scrollbar-bg-active: #5b6078 !important;
+  --shadow: #181926 !important;
+  --shadow-inset: #181926 !important;
+  --shadow-subtle: #1e2030 !important;
+  --shadow-focus: #c6a0f6 !important;
+  --accent-card: #8aadf4 !important;
+  --accent-note: #a6da95 !important;
+  --accent-danger: #ed8796 !important;
+  --state-new: #8aadf4 !important;
+  --state-learn: #ed8796 !important;
+  --state-review: #a6da95 !important;
+  --state-buried: #f5a97f !important;
+  --state-suspended: #eed49f !important;
+  --state-marked: #c6a0f6 !important;
+  --highlight-bg: #5b6078 !important;
+  --highlight-fg: #cad3f5 !important;
+  --selected-bg: #5b6078 !important;
+  --selected-fg: #cad3f5 !important;
+}
+html, body { background-color: #24273a; color: #cad3f5; }
+.btn-primary { color: #181926 !important; }
+:root, :root.night-mode, body {
+  --bs-body-bg: #24273a !important;
+  --bs-body-bg-rgb: 36, 39, 58 !important;
+  --bs-body-color: #cad3f5 !important;
+  --bs-body-color-rgb: 202, 211, 245 !important;
+  --bs-secondary-color: #a5adcb !important;
+  --bs-secondary-color-rgb: 165, 173, 203 !important;
+  --bs-tertiary-color: #6e738d !important;
+  --bs-tertiary-color-rgb: 110, 115, 141 !important;
+  --bs-secondary-bg: #363a4f !important;
+  --bs-secondary-bg-rgb: 54, 58, 79 !important;
+  --bs-tertiary-bg: #1e2030 !important;
+  --bs-tertiary-bg-rgb: 30, 32, 48 !important;
+  --bs-emphasis-color: #cad3f5 !important;
+  --bs-emphasis-color-rgb: 202, 211, 245 !important;
+  --bs-border-color: #5b6078 !important;
+  --bs-border-color-rgb: 91, 96, 120 !important;
+  --bs-primary: #c6a0f6 !important;
+  --bs-primary-rgb: 198, 160, 246 !important;
+  --bs-secondary: #a5adcb !important;
+  --bs-secondary-rgb: 165, 173, 203 !important;
+  --bs-success: #a6da95 !important;
+  --bs-success-rgb: 166, 218, 149 !important;
+  --bs-danger: #ed8796 !important;
+  --bs-danger-rgb: 237, 135, 150 !important;
+  --bs-warning: #eed49f !important;
+  --bs-warning-rgb: 238, 212, 159 !important;
+  --bs-info: #8aadf4 !important;
+  --bs-info-rgb: 138, 173, 244 !important;
+  --bs-link-color: #8aadf4 !important;
+  --bs-link-color-rgb: 138, 173, 244 !important;
+  --bs-link-hover-color: #b7bdf8 !important;
+  --bs-link-hover-color-rgb: 183, 189, 248 !important;
+  --bs-card-bg: #1e2030 !important;
+  --bs-card-bg-rgb: 30, 32, 48 !important;
+}

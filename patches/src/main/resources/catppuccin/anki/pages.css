@@ -1,0 +1,5 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+:root { --bs-body-bg:var(--canvas);--bs-body-color:var(--fg);--bs-primary:var(--accent);--bs-border-color:var(--border); }
+html, body, body.card, body.card.nightMode, body.card.night_mode { background:var(--canvas)!important;color:var(--fg)!important; }
+body, .card, #qa { --canvas-elevated:var(--surface); }
+a, .cloze {color:var(--accent);}
