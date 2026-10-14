@@ -1,3 +1,7 @@
+# [0.4.1](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.4.1) (2026-10-14)
+
+* Add AnkiDroid 2.25.2 to the compatibility list. On-device testing of this point release is pending.
+
 # [0.4.0](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.4.0) (2026-10-13)
 
 ### Features

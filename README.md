@@ -22,7 +22,7 @@ For a custom font, also select **Gboard custom font**, open its options, and cho
 
 ## AnkiDroid
 
-For **AnkiDroid 2.25.1**, apply **AnkiDroid Catppuccin theme and fonts**. No other patch source is needed.
+For **AnkiDroid 2.25.1 or 2.25.2**, apply **AnkiDroid Catppuccin theme and fonts**. No other patch source is needed.
 
 In **Settings → Appearance**, choose **Catppuccin Latte** as the day theme and **Catppuccin Macchiato** as the night theme. **Font and text size** offers App default, bundled JetBrains Mono, a custom TTF picker, and 70–150% text scaling. Selected fonts override card template fonts in study and preview screens; App default restores the original fonts.
 
