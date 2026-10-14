@@ -1,5 +1,5 @@
 {
-  "version": "0.4.0",
+  "version": "0.4.1",
   "patches": [
     {
       "name": "Catppuccin theme",
@@ -80,7 +80,8 @@
       "dependencies": [],
       "compatiblePackages": {
         "com.ichi2.anki": [
-          "2.25.1"
+          "2.25.1",
+          "2.25.2"
         ]
       },
       "options": []

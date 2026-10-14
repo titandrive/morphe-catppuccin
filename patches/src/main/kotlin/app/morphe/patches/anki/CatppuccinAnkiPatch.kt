@@ -111,7 +111,7 @@ val catppuccinAnkiPatch = bytecodePatch(
     description = "Replaces Light with Latte and Dark with Macchiato. Adds JetBrains Mono, custom TTF import, and font sizing under Appearance. Selected fonts override card template fonts.",
     default = false,
 ) {
-    compatibleWith(Compatibility(name="AnkiDroid", packageName="com.ichi2.anki", targets=listOf(AppTarget(version="2.25.1"))))
+    compatibleWith(Compatibility(name="AnkiDroid", packageName="com.ichi2.anki", targets=listOf(AppTarget(version="2.25.1"), AppTarget(version="2.25.2"))))
     dependsOn(ankiResources)
     extendWith("catppuccin/anki.dex")
     execute {
