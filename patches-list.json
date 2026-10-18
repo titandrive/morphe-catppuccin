@@ -1,5 +1,5 @@
 {
-  "version": "0.6.0",
+  "version": "0.6.1",
   "patches": [
     {
       "name": "Catppuccin theme",
@@ -133,6 +133,30 @@
         ]
       },
       "options": []
+    },
+    {
+      "name": "Fastmail custom font",
+      "description": "Use your TTF font in Fastmail's interface. Repatch an original APK to change or remove it.",
+      "use": false,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.fastmail.app": [
+          "4.24.0"
+        ]
+      },
+      "options": [
+        {
+          "key": "font-file",
+          "title": "Custom TTF font",
+          "description": "Choose a TTF file to embed as Fastmail's interface font.",
+          "type": "kotlin.String",
+          "required": true,
+          "default": null,
+          "allowedExtensions": [
+            "ttf"
+          ]
+        }
+      ]
     }
   ]
 }

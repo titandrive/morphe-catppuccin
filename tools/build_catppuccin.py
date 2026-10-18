@@ -38,7 +38,7 @@ if os.environ.get('CATPPUCCIN_ANKI_TEST') == '1':
 
 MORPHE_VERSION = '1.18.0'
 KOTLIN_VERSION = '2.3.21'
-BUNDLE_VERSION = os.environ.get('CATPPUCCIN_VERSION', '0.6.0')
+BUNDLE_VERSION = os.environ.get('CATPPUCCIN_VERSION', '0.6.1')
 
 
 def fetch(name, url):
@@ -149,6 +149,8 @@ def main():
         if fastmail_dex:
             with zipfile.ZipFile(fastmail_dex) as extension:
                 archive.writestr('catppuccin/fastmail.dex', extension.read('classes.dex'))
+            archive.write(ROOT / 'patches/src/main/resources/catppuccin/fastmail/font-settings.js',
+                'catppuccin/fastmail/font-settings.js')
             archive.write(ROOT / 'patches/src/main/resources/catppuccin/fastmail/macchiato.css',
                 'catppuccin/fastmail/macchiato.css')
         for path in sorted(classes.rglob('*')):

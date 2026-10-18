@@ -44,9 +44,11 @@ Use an **original, unpatched APK**. A Morphe-signed app cannot install over the 
 
 For **Fastmail 4.24.0**, apply **Fastmail Catppuccin theme** to an **original, unpatched APK**. No other patch source is needed.
 
-Choose **Dark** under **Settings → Display options → Appearance**. The patch replaces dark mode with **Catppuccin Macchiato**, including a mauve floating compose button. It does not add a theme-picker entry; light mode remains unchanged. Custom fonts are not included.
+Choose **Dark** under **Settings → Display options → Appearance**. The patch replaces dark mode with **Catppuccin Macchiato**, including a mauve floating compose button. It does not add a theme-picker entry; light mode remains unchanged.
 
 Keep the same Morphe signing key for updates. A Morphe-signed APK cannot install directly over the Play Store version because the signatures differ.
+
+For a custom font, also select **Fastmail custom font**, open its options, and choose a **TTF file**. In **Display options → Accessibility → Custom font scale**, choose 70–150% to adjust its size; **Default (100%)** restores normal sizing. The scale is saved locally. Repatch an original APK to change or remove the font.
 
 ## Vibe-code disclosure
 
