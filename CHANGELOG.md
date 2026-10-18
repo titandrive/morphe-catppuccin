@@ -1,3 +1,10 @@
+# [0.5.2](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.5.2) (2026-10-18)
+
+### Fixes
+
+* **Todoist:** Deliver the Notifications divider removal and lavender P4 flag with synchronized stable/prerelease update metadata.
+* **Todoist:** Publish matching app-scoped changelogs before advertising the new patch bundle, fixing the missing release notes used by Morphe update detection.
+
 # [0.5.1](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.5.1) (2026-10-18)
 
 ### Fixes
