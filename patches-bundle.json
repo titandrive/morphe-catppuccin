@@ -1,6 +1,6 @@
 {
-  "version": "0.5.3",
-  "download_url": "https://github.com/titandrive/morphe-catppuccin/releases/download/catppuccin-v0.5.3/morphe-catppuccin-0.5.3.mpp",
-  "created_at": "2026-10-18T22:02:09",
-  "description": "Todoist: use layout-controlled Notifications divider visibility and a direct P4 lavender flag rendering hook."
+  "version": "0.5.4",
+  "download_url": "https://github.com/titandrive/morphe-catppuccin/releases/download/catppuccin-v0.5.4/morphe-catppuccin-0.5.4.mpp",
+  "created_at": "2026-10-18T22:14:16",
+  "description": "Todoist rollback: restores the exact 0.5.0 patch code, removing the Notifications-divider and P4-flag tweaks."
 }
