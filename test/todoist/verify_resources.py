@@ -29,6 +29,8 @@ expected = {
  'catppuccin_latte_selectable_secondary_on_selected_tint':'#8839ef',
  'catppuccin_macchiato_divider_primary':'#5b6078',
  'catppuccin_latte_divider_primary':'#9ca0b0',
+ 'catppuccin_macchiato_priorities_p4_primary_idle_tint':'#b7bdf8',
+ 'catppuccin_latte_priorities_p4_primary_idle_tint':'#7287fd',
 }
 for name, value in expected.items():
  assert colors[name].lower() == value, (name, colors[name], value)

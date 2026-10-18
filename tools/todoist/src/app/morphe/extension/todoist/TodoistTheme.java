@@ -1,6 +1,8 @@
 package app.morphe.extension.todoist;
 
 import android.app.Application;
+import android.view.View;
+import android.view.ViewGroup;
 import android.content.res.Resources;
 import android.app.Activity;
 import android.os.Bundle;
@@ -109,6 +111,23 @@ public final class TodoistTheme {
             return constructor.newInstance(args);
         }
         throw new ReflectiveOperationException("Palette constructor missing: " + type);
+    }
+    public static void hideNotificationsDivider(View root) {
+        if (TodoistIdentities.themeId(currentTheme()) == 0 || !(root instanceof ViewGroup)) return;
+        ViewGroup container = (ViewGroup) root;
+        // Only the anonymous divider between these two known views is removed.
+        // Preserve the selected tab underline and all stock-theme layouts.
+        int tabs = resource("notifications_tab_layout", "id");
+        int pages = resource("notifications_view_pager", "id");
+        for (int i = 1; i + 1 < container.getChildCount(); i++) {
+            View divider = container.getChildAt(i);
+            if (container.getChildAt(i - 1).getId() == tabs
+                && container.getChildAt(i + 1).getId() == pages
+                && divider.getId() == View.NO_ID && divider.getClass() == View.class) {
+                divider.setVisibility(View.GONE);
+                return;
+            }
+        }
     }
     public static int nativeStyle(Object theme) {
         int id = TodoistIdentities.themeId(theme);

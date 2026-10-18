@@ -14,7 +14,7 @@ public final class ThemeHooks {
   Matcher rows=Pattern.compile("add\\(\"([^\"]+)\", \"([^\"]+)\"\\)").matcher(Files.readString(Path.of(args[1])));
   while(rows.find())schema.put(rows.group(1),rows.group(2));
   var container=DexFileFactory.loadDexContainer(new File(args[0]),Opcodes.getDefault());
-  int init=0, hooks=0, returns=0, fields=0, navigation=0, catalog=0, guards=0, selection=0;
+  int init=0, hooks=0, returns=0, fields=0, navigation=0, catalog=0, guards=0, selection=0, notificationDivider=0;
   for(String entry:container.getDexEntryNames())for(ClassDef klass:container.getEntry(entry).getDexFile().getClasses()) {
    for(Method method:klass.getMethods()) {
     if(method.getImplementation()==null)continue;
@@ -30,6 +30,10 @@ public final class ThemeHooks {
        if(resolver&&call.getName().equals("customPalette"))hooks++;
        if(call.getName().equals("navigationIcon"))navigation++;
        if(call.getName().equals("selectedTheme"))selection++;
+       if(call.getName().equals("hideNotificationsDivider")) {
+        if(!klass.getType().equals("Leec;")||!method.getName().equals("E0"))throw new AssertionError("Divider hook outside Notifications");
+        notificationDivider++;
+       }
        if(call.getName().equals("nativeStyle")||call.getName().equals("previewStyle"))guards++;
 
       }
@@ -55,6 +59,7 @@ public final class ThemeHooks {
    }
   }
   if(init!=1||returns<10||hooks!=1||fields!=413||navigation<6||catalog!=2||guards!=3||selection!=1)throw new AssertionError("Picker hook/schema mismatch: "+init+", "+returns+", "+hooks+", "+fields+", "+navigation+", "+catalog+", "+guards+", "+selection);
-  System.out.println("Verified isolated palettes, catalog additions, native/Compose guards, persistence, conditional icons and "+fields+" semantic fields");
+  if(notificationDivider!=1)throw new AssertionError("Notifications divider hook missing");
+  System.out.println("Verified scoped Notifications divider, isolated palettes, catalog additions, native/Compose guards, persistence, conditional icons and "+fields+" semantic fields");
  }
 }

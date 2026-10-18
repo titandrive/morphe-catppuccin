@@ -35,6 +35,7 @@ private val macchiato = Palette("24273a", "1e2030", "363a4f", "5b6078", "cad3f5"
 // Preserve priority/date meanings instead of replacing every saturated color with mauve.
 private fun tokenColor(token: String, p: Palette): String {
     if (token == "background_overlay") return "#66000000"
+    if (token == "priorities_p4_primary_idle_tint") return "#${p.lavender}"
     val accent = when {
         "destructive" in token || "attention" in token || "overdue" in token || "p1_" in token -> p.red
         "warning" in token || "tomorrow" in token || "p2_" in token || "promote" in token -> p.peach
@@ -172,6 +173,8 @@ val catppuccinTodoistPatch = bytecodePatch(
         require(classDefBy("Ld77;").fields.count() == 10) { "Todoist color model changed" }
         mutableClassDefBy("Lcom/todoist/App;").methods.single { it.name == "onCreate" }
             .addInstructions(0, "invoke-static/range {p0 .. p0}, $ext->install(Landroid/app/Application;)V")
+        mutableClassDefBy("Leec;").methods.single { it.name == "E0" && it.parameterTypes.firstOrNull() == "Landroid/view/View;" }
+            .addInstructions(0, "invoke-static/range {p1 .. p1}, $ext->hideNotificationsDivider(Landroid/view/View;)V")
         // Unknown identities never reach Todoist's exhaustive stock-theme branches.
         for ((owner, name, descriptor, helper, result) in listOf(
             listOf("Le77;", "a", "Ld77;", "$ext->customPalette", "Ljava/lang/Object;"),
