@@ -1,6 +1,6 @@
 # Morphe - Catppuccin
 
-Catppuccin themes for Boost, Gboard, and AnkiDroid, patched with [Morphe Manager](https://morphe.software/).
+Catppuccin themes for Boost, Gboard, AnkiDroid, and Todoist, patched with [Morphe Manager](https://morphe.software/).
 
 Add `titandrive/morphe-catppuccin` as a remote patch source in Morphe.
 
@@ -27,6 +27,18 @@ For **AnkiDroid 2.25.1 or 2.25.2**, apply **AnkiDroid Catppuccin theme and fonts
 In **Settings → Appearance**, choose **Catppuccin Latte** as the day theme and **Catppuccin Macchiato** as the night theme. **Font and text size** offers App default, bundled JetBrains Mono, a custom TTF picker, and 70–150% text scaling. Selected fonts override card template fonts in study and preview screens; App default restores the original fonts.
 
 Start with an **original, unpatched APK** when updating. Morphe signs the result with its own key, so it cannot install directly over a Google Play/GitHub-signed AnkiDroid installation. Back up/sync your collection before switching installations, and keep using the same Morphe signing key for subsequent updates. AnkiCat remains a separate app.
+
+## Todoist
+
+For **Todoist v12314**, apply **Todoist Catppuccin theme**. No other patch source is needed.
+
+Open **Settings → Theme** and choose **Catppuccin Macchiato** or **Catppuccin Latte**. Original themes remain available; Catppuccin selections are saved locally rather than synced to other devices.
+
+Widgets have their own **Theme** setting: choose either Catppuccin theme when adding or editing a widget.
+
+For a custom font, also select **Todoist custom font**, open its options, and choose a **TTF file**. The font is embedded throughout the app, with no additional in-app font selector. Repatch an original APK to change or remove it.
+
+Use an **original, unpatched APK**. A Morphe-signed app cannot install over the Play Store version because their signing keys differ. Sync your tasks before switching installations, and keep the same Morphe signing key for future updates.
 
 ## Vibe-code disclosure
 
