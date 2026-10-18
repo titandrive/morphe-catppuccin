@@ -24,16 +24,21 @@ SOURCES = [
     ROOT / 'patches/src/main/kotlin/app/morphe/patches/gboard/theme/CatppuccinGboardPatch.kt',
     ROOT / 'patches/src/main/kotlin/app/morphe/patches/gboard/theme/CustomFontGboardPatch.kt',
 ]
+SOURCES.append(ROOT / 'patches/src/main/kotlin/app/morphe/patches/fastmail/CatppuccinFastmailPatch.kt')
+
 # Maps is still a draft; include it only in explicitly requested local test builds.
 if os.environ.get('CATPPUCCIN_INCLUDE_MAPS') == '1':
     SOURCES.append(ROOT / 'patches/src/main/kotlin/app/morphe/patches/maps/theme/CatppuccinMapsPatch.kt')
+
+if os.environ.get('CATPPUCCIN_FASTMAIL_TEST') == '1':
+    SOURCES.append(ROOT / 'test/fastmail/TestIdentityPatch.kt')
 
 if os.environ.get('CATPPUCCIN_ANKI_TEST') == '1':
     SOURCES.append(ROOT / 'test/anki/TestIdentityPatch.kt')
 
 MORPHE_VERSION = '1.18.0'
 KOTLIN_VERSION = '2.3.21'
-BUNDLE_VERSION = os.environ.get('CATPPUCCIN_VERSION', '0.5.4')
+BUNDLE_VERSION = os.environ.get('CATPPUCCIN_VERSION', '0.6.0')
 
 
 def fetch(name, url):
@@ -122,12 +127,30 @@ def main():
     todoist_dex = BUILD / 'todoist-extension.zip'
     run(java, '-cp', d8, 'com.android.tools.r8.D8', '--release', '--min-api', '32',
         '--lib', android_jar, '--output', todoist_dex, todoist_jar)
+    fastmail_classes = BUILD / 'fastmail-extension'
+    if fastmail_classes.exists():
+        shutil.rmtree(fastmail_classes)
+    fastmail_classes.mkdir()
+    run(java_home / 'bin/javac', '-source', '8', '-target', '8', '-classpath', android_jar,
+        '-d', fastmail_classes, *sorted((ROOT / 'tools/fastmail/src').rglob('*.java')))
+    fastmail_jar = BUILD / 'fastmail-extension.jar'
+    with zipfile.ZipFile(fastmail_jar, 'w') as archive:
+        for path in fastmail_classes.rglob('*.class'):
+            archive.write(path, path.relative_to(fastmail_classes))
+    fastmail_dex = BUILD / 'fastmail-extension.zip'
+    run(java, '-cp', d8, 'com.android.tools.r8.D8', '--release', '--min-api', '26',
+        '--lib', android_jar, '--output', fastmail_dex, fastmail_jar)
     manifest = ('Manifest-Version: 1.0\nName: Morphe - Catppuccin\n'
-        f'Description: Catppuccin themes for Boost, Gboard, AnkiDroid, and Todoist\nVersion: {BUNDLE_VERSION}\n'
+        f'Description: Catppuccin themes for Boost, Gboard, AnkiDroid, Todoist, and Fastmail\nVersion: {BUNDLE_VERSION}\n'
         'Author: titandrive\nSource: https://github.com/titandrive/morphe-catppuccin\n'
         'License: GPL-3.0 with upstream NOTICE conditions\n\n')
     with zipfile.ZipFile(bundle, 'w', zipfile.ZIP_DEFLATED) as archive:
         archive.writestr('META-INF/MANIFEST.MF', manifest)
+        if fastmail_dex:
+            with zipfile.ZipFile(fastmail_dex) as extension:
+                archive.writestr('catppuccin/fastmail.dex', extension.read('classes.dex'))
+            archive.write(ROOT / 'patches/src/main/resources/catppuccin/fastmail/macchiato.css',
+                'catppuccin/fastmail/macchiato.css')
         for path in sorted(classes.rglob('*')):
             if path.is_file():
                 archive.write(path, path.relative_to(classes))

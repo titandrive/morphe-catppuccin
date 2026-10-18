@@ -1,3 +1,9 @@
+# [0.6.0](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.6.0) (2026-10-18)
+
+### Features
+
+* **Fastmail:** Add Catppuccin Macchiato for Fastmail 4.24.0 dark mode, with mauve accents and a mauve floating compose button. Light mode remains unchanged.
+
 # [0.5.4](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.5.4) (2026-10-18)
 
 ### Rollback

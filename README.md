@@ -1,6 +1,6 @@
 # Morphe - Catppuccin
 
-Catppuccin themes for Boost, Gboard, AnkiDroid, and Todoist, patched with [Morphe Manager](https://morphe.software/).
+Catppuccin themes for Boost, Gboard, AnkiDroid, Todoist, and Fastmail, patched with [Morphe Manager](https://morphe.software/).
 
 Add `titandrive/morphe-catppuccin` as a remote patch source in Morphe.
 
@@ -39,6 +39,14 @@ Widgets have their own **Theme** setting: choose either Catppuccin theme when ad
 For a custom font, also select **Todoist custom font**, open its options, and choose a **TTF file**. The font is embedded throughout the app, with no additional in-app font selector. Repatch an original APK to change or remove it.
 
 Use an **original, unpatched APK**. A Morphe-signed app cannot install over the Play Store version because their signing keys differ. Sync your tasks before switching installations, and keep the same Morphe signing key for future updates.
+
+## Fastmail
+
+For **Fastmail 4.24.0**, apply **Fastmail Catppuccin theme** to an **original, unpatched APK**. No other patch source is needed.
+
+Choose **Dark** under **Settings → Display options → Appearance**. The patch replaces dark mode with **Catppuccin Macchiato**, including a mauve floating compose button. It does not add a theme-picker entry; light mode remains unchanged. Custom fonts are not included.
+
+Keep the same Morphe signing key for updates. A Morphe-signed APK cannot install directly over the Play Store version because the signatures differ.
 
 ## Vibe-code disclosure
 

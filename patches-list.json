@@ -1,5 +1,5 @@
 {
-  "version": "0.5.4",
+  "version": "0.6.0",
   "patches": [
     {
       "name": "Catppuccin theme",
@@ -121,6 +121,18 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Fastmail Catppuccin theme",
+      "description": "Replace Fastmail dark mode with Catppuccin Macchiato and mauve accents. Light mode remains available.",
+      "use": false,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.fastmail.app": [
+          "4.24.0"
+        ]
+      },
+      "options": []
     }
   ]
 }
