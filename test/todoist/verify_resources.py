@@ -60,3 +60,13 @@ for variant, prefix in [('Latte', 'catppuccin_latte_'), ('Macchiato', 'catppucci
  for attribute in ('colorAccent', 'android:colorAccent'):
   assert styles['ThemeOverlay.Catppuccin.' + variant][attribute] == '@color/' + prefix + 'actionable_primary_idle_fill'
 print('Both refresh-spinner accent sources use mauve in custom themes')
+
+android = '{http://schemas.android.com/apk/res/android}'
+layout = ET.parse(resources/'res/layout/fragment_live_notifications.xml').getroot()
+dividers = layout.findall('View')
+assert len(dividers) == 1
+assert dividers[0].get(android+'visibility') == '?attr/catppuccinNotificationsDividerVisibility'
+assert styles['Theme.Todoist']['catppuccinNotificationsDividerVisibility'] in ('0', '0x00000000')
+for variant in ('Latte', 'Macchiato'):
+ assert styles['ThemeOverlay.Catppuccin.'+variant]['catppuccinNotificationsDividerVisibility'] in ('2', '0x00000002')
+print('Notifications divider visibility comes from the theme: gone for Catppuccin, visible for stock')

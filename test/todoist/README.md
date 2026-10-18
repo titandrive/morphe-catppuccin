@@ -25,3 +25,9 @@ Device runtime verification is required before calling this ready for release.
 Verify switching from stock Todoist to both Catppuccin choices and back,
 including a force-stop/relaunch. Check that stock palettes are unchanged and
 that custom selections remain local.
+
+For Notifications/P4 changes, inspect the final compiled APK as well as the
+patcher's intermediate XML. Decode resources with APKEditor `d -dex -t xml`;
+run `verify_resources.py` on that output. The XML visibility enum for `gone`
+is 2 (Android's runtime `View.GONE` constant is 8). Confirm the direct P4 hook
+with `ThemeHooks.java`. Visual verification remains a separate required check.
