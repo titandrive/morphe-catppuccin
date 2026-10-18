@@ -1,3 +1,10 @@
+# [0.5.3](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.5.3) (2026-10-18)
+
+### Fixes
+
+* **Todoist:** Hide the Notifications tab divider through a theme-controlled layout attribute, replacing the conditional fragment view search.
+* **Todoist:** Tint the P4 flag directly at the priority-button renderer, replacing reliance on the palette token alone.
+
 # [0.5.2](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.5.2) (2026-10-18)
 
 ### Fixes
