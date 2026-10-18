@@ -1,5 +1,5 @@
 {
-  "version": "0.4.1",
+  "version": "0.5.0",
   "patches": [
     {
       "name": "Catppuccin theme",
@@ -85,6 +85,42 @@
         ]
       },
       "options": []
+    },
+    {
+      "name": "Todoist Catppuccin theme",
+      "description": "Adds separate Catppuccin Latte and Macchiato choices to Todoist's theme picker. Original themes remain available. Catppuccin choices are saved locally.",
+      "use": false,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.todoist": [
+          "v12314"
+        ]
+      },
+      "options": []
+    },
+    {
+      "name": "Todoist custom font",
+      "description": "Embeds your TTF as Todoist's interface font. Repatch to change or remove it. No extra in-app selector.",
+      "use": false,
+      "dependencies": [],
+      "compatiblePackages": {
+        "com.todoist": [
+          "v12314"
+        ]
+      },
+      "options": [
+        {
+          "key": "font-file",
+          "title": "Custom TTF font",
+          "description": "Choose the TTF to use throughout Todoist.",
+          "type": "kotlin.String",
+          "required": true,
+          "default": null,
+          "allowedExtensions": [
+            "ttf"
+          ]
+        }
+      ]
     }
   ]
 }
