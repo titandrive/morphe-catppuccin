@@ -1,3 +1,18 @@
+# [0.5.1](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.5.1) (2026-10-18)
+
+### Fixes
+
+* **Todoist:** Remove the horizontal divider beneath Notifications All/Unread tabs while preserving the selected-tab underline.
+* **Todoist:** Color the P4 flag Catppuccin lavender in Macchiato and Latte.
+
+# [0.5.0](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.5.0) (2026-10-17)
+
+### Features
+
+* **Todoist:** Add separate Catppuccin Macchiato and Latte choices to the theme picker, preserving stock themes and keeping custom selections local.
+* **Todoist:** Add Catppuccin widget theme choices and an optional custom TTF font patch.
+* **Todoist:** Use mauve refresh spinners and refresh native screens consistently when changing themes.
+
 # [0.4.1](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.4.1) (2026-10-14)
 
 * Add AnkiDroid 2.25.2 to the compatibility list. On-device testing of this point release is pending.
