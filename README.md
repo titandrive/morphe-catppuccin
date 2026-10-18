@@ -33,3 +33,10 @@ Start with an **original, unpatched APK** when updating. Morphe signs the result
 This project is vibe-coded with AI assistance from OpenAI Codex.
 
 This app uses code from Patcheddit. To learn more, visit https://reddit.com/r/patcheddit
+
+### Todoist (in development)
+
+Two optional patches target Todoist `v12314`: **Todoist Catppuccin theme** and
+**Todoist custom font**. Select **Catppuccin Latte** or **Catppuccin Macchiato** in Todoist's theme picker.
+Original themes stay available; Catppuccin selections are saved locally. The font patch embeds a `.ttf` chosen in Morphe; repatch
+with an original APK to change or remove it. This work has not been published yet.

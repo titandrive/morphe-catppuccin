@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / '.cache' / 'catppuccin'
 BUILD = ROOT / 'build' / 'catppuccin'
 SOURCES = [
+    ROOT / "patches/src/main/kotlin/app/morphe/patches/todoist/TodoistPatches.kt",
     ROOT / "patches/src/main/kotlin/app/morphe/patches/anki/CatppuccinAnkiPatch.kt",
     ROOT / "patches/src/main/kotlin/app/morphe/patches/shared/fonts/TrueType.kt",
     ROOT / "patches/src/main/kotlin/app/morphe/patches/reddit/customclients/boostforreddit/theme/CustomFontBoostPatch.kt",
@@ -31,6 +32,7 @@ if os.environ.get('CATPPUCCIN_ANKI_TEST') == '1':
 
 MORPHE_VERSION = '1.18.0'
 KOTLIN_VERSION = '2.3.21'
+BUNDLE_VERSION = os.environ.get('CATPPUCCIN_VERSION', '0.4.1')
 
 
 def fetch(name, url):
@@ -67,7 +69,7 @@ def main():
         'org.jetbrains.kotlin.cli.jvm.K2JVMCompiler', '-no-stdlib', '-no-reflect',
         '-classpath', os.pathsep.join(map(str, (morphe, annotations))),
         '-language-version', '2.2', '-jvm-target', '11', '-d', classes, *SOURCES)
-    bundle = ROOT / ('build/morphe-catppuccin-0.4.1-test.mpp' if os.environ.get('CATPPUCCIN_ANKI_TEST') == '1' else 'build/morphe-catppuccin-0.4.1.mpp')
+    bundle = ROOT / (f'build/morphe-catppuccin-{BUNDLE_VERSION}-test.mpp' if os.environ.get('CATPPUCCIN_ANKI_TEST') == '1' else f'build/morphe-catppuccin-{BUNDLE_VERSION}.mpp')
     maps_classes = BUILD / 'maps-extension'
     if maps_classes.exists():
         shutil.rmtree(maps_classes)
@@ -96,8 +98,21 @@ def main():
     anki_dex = BUILD / 'anki-extension.zip'
     run(java, '-cp', d8, 'com.android.tools.r8.D8', '--release', '--min-api', '24',
         '--lib', android_jar, '--output', anki_dex, anki_jar)
+    todoist_classes = BUILD / 'todoist-extension'
+    if todoist_classes.exists():
+        shutil.rmtree(todoist_classes)
+    todoist_classes.mkdir()
+    run(java_home / 'bin/javac', '-source', '8', '-target', '8', '-classpath', android_jar,
+        '-d', todoist_classes, *sorted((ROOT / 'tools/todoist/src').rglob('*.java')))
+    todoist_jar = BUILD / 'todoist-extension.jar'
+    with zipfile.ZipFile(todoist_jar, 'w') as archive:
+        for path in todoist_classes.rglob('*.class'):
+            archive.write(path, path.relative_to(todoist_classes))
+    todoist_dex = BUILD / 'todoist-extension.zip'
+    run(java, '-cp', d8, 'com.android.tools.r8.D8', '--release', '--min-api', '32',
+        '--lib', android_jar, '--output', todoist_dex, todoist_jar)
     manifest = ('Manifest-Version: 1.0\nName: Morphe - Catppuccin\n'
-        'Description: Catppuccin themes for Boost, Gboard, and AnkiDroid\nVersion: 0.4.1\n'
+        f'Description: Catppuccin themes for Boost, Gboard, AnkiDroid, and Todoist\nVersion: {BUNDLE_VERSION}\n'
         'Author: titandrive\nSource: https://github.com/titandrive/morphe-catppuccin\n'
         'License: GPL-3.0 with upstream NOTICE conditions\n\n')
     with zipfile.ZipFile(bundle, 'w', zipfile.ZIP_DEFLATED) as archive:
@@ -107,6 +122,8 @@ def main():
                 archive.write(path, path.relative_to(classes))
         with zipfile.ZipFile(maps_dex) as extension:
             archive.writestr('catppuccin/maps.dex', extension.read('classes.dex'))
+        with zipfile.ZipFile(todoist_dex) as extension:
+            archive.writestr('catppuccin/todoist.dex', extension.read('classes.dex'))
         with zipfile.ZipFile(anki_dex) as extension:
             archive.writestr('catppuccin/anki.dex', extension.read('classes.dex'))
         for path in sorted((ROOT / 'patches/src/main/resources/catppuccin/anki').rglob('*')):
