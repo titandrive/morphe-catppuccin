@@ -1,3 +1,10 @@
+# [0.5.4](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.5.4) (2026-10-18)
+
+### Rollback
+
+* **Todoist:** Restore the exact patch implementation from 0.5.0. Revert the Notifications-divider and P4-flag changes introduced in 0.5.1–0.5.3.
+* **Todoist:** Keep the previously working theme picker, custom font support, widget palettes, and mauve refresh spinner.
+
 # [0.5.3](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.5.3) (2026-10-18)
 
 ### Fixes

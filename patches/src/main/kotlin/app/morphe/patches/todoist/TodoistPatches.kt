@@ -35,7 +35,6 @@ private val macchiato = Palette("24273a", "1e2030", "363a4f", "5b6078", "cad3f5"
 // Preserve priority/date meanings instead of replacing every saturated color with mauve.
 private fun tokenColor(token: String, p: Palette): String {
     if (token == "background_overlay") return "#66000000"
-    if (token == "priorities_p4_primary_idle_tint") return "#${p.lavender}"
     val accent = when {
         "destructive" in token || "attention" in token || "overdue" in token || "p1_" in token -> p.red
         "warning" in token || "tomorrow" in token || "p2_" in token || "promote" in token -> p.peach
@@ -117,24 +116,9 @@ private val todoistResources = resourcePatch {
             for ((name, title) in mapOf("catppuccin_latte_title" to "Catppuccin Latte", "catppuccin_macchiato_title" to "Catppuccin Macchiato"))
                 xml.documentElement.appendChild(xml.createElement("string").apply { setAttribute("name", name); textContent = title })
         }
-        document("res/values/attrs.xml").use { xml ->
-            xml.documentElement.appendChild(xml.createElement("attr").apply {
-                setAttribute("name", "catppuccinNotificationsDividerVisibility")
-                setAttribute("format", "integer")
-            })
-        }
-        document("res/layout/fragment_live_notifications.xml").use { xml ->
-            val nodes = xml.getElementsByTagName("View")
-            require(nodes.length == 1) { "Todoist Notifications divider layout changed" }
-            (nodes.item(0) as Element).setAttribute("android:visibility", "?attr/catppuccinNotificationsDividerVisibility")
-        }
         document("res/values/styles.xml").use { xml ->
             val nodes = xml.getElementsByTagName("style")
             val originals = (0 until nodes.length).map { nodes.item(it) as Element }.associateBy { it.getAttribute("name") }
-            requireNotNull(originals["Theme.Todoist"]).appendChild(xml.createElement("item").apply {
-                setAttribute("name", "catppuccinNotificationsDividerVisibility")
-                textContent = "0"
-            })
             fun items(name: String): Map<String,String> {
                 val style = originals[name] ?: return emptyMap()
                 val values = items(style.getAttribute("parent").removePrefix("@style/")).toMutableMap()
@@ -161,7 +145,6 @@ private val todoistResources = resourcePatch {
                 // leaves half of the spinner animation unthemed.
                 values["colorAccent"] = "@color/${prefix}actionable_primary_idle_fill"
                 values["android:colorAccent"] = "@color/${prefix}actionable_primary_idle_fill"
-                values["catppuccinNotificationsDividerVisibility"] = "2" // XML visibility enum: gone (not View.GONE=8).
                 values["snackbarStyle"] = "@style/Widget.Catppuccin.Snackbar"
                 values["snackbarTextViewStyle"] = "@style/Widget.Catppuccin.Snackbar.TextView"
                 values["snackbarButtonStyle"] = "@style/Widget.Catppuccin.Snackbar.Button"
@@ -189,9 +172,6 @@ val catppuccinTodoistPatch = bytecodePatch(
         require(classDefBy("Ld77;").fields.count() == 10) { "Todoist color model changed" }
         mutableClassDefBy("Lcom/todoist/App;").methods.single { it.name == "onCreate" }
             .addInstructions(0, "invoke-static/range {p0 .. p0}, $ext->install(Landroid/app/Application;)V")
-        val priorityButton = mutableClassDefBy("Ldrf;").methods.single { it.name == "a" }
-        require(priorityButton.parameterTypes.take(3) == listOf("Ljava/lang/String;", "I", "J")) { "Todoist priority button changed" }
-        priorityButton.addInstructions(0, "invoke-static/range {p1 .. p3}, $ext->priorityFlagTint(IJ)J\nmove-result-wide p2")
         // Unknown identities never reach Todoist's exhaustive stock-theme branches.
         for ((owner, name, descriptor, helper, result) in listOf(
             listOf("Le77;", "a", "Ld77;", "$ext->customPalette", "Ljava/lang/Object;"),

@@ -110,14 +110,6 @@ public final class TodoistTheme {
         }
         throw new ReflectiveOperationException("Palette constructor missing: " + type);
     }
-    public static long priorityFlagTint(int drawable, long original) {
-        int id = TodoistIdentities.themeId(currentTheme());
-        if (id == 0 || !"ic_flag_outline".equals(app.getResources().getResourceEntryName(drawable))) return original;
-        int color = resource(id == TodoistIdentities.LATTE
-            ? "catppuccin_latte_priorities_p4_primary_idle_tint"
-            : "catppuccin_macchiato_priorities_p4_primary_idle_tint", "color");
-        return ((long) app.getResources().getColor(color, app.getTheme())) << 32;
-    }
     public static int nativeStyle(Object theme) {
         int id = TodoistIdentities.themeId(theme);
         if (id == 0) return 0;
