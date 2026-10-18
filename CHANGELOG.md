@@ -1,3 +1,10 @@
+# [0.6.1](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.6.1) (2026-10-18)
+
+### Features
+
+* **Fastmail:** Add an optional custom TTF font patch with a file picker, usable with or without the Catppuccin theme.
+* **Fastmail:** Add locally saved 70–150% custom font scaling under Display options → Accessibility. Use Fastmail's own sizing pipeline and retain its standard email-row layout.
+
 # [0.6.0](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.6.0) (2026-10-18)
 
 ### Features
