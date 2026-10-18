@@ -26,6 +26,11 @@ SOURCES = [
 ]
 SOURCES.append(ROOT / 'patches/src/main/kotlin/app/morphe/patches/fastmail/CatppuccinFastmailPatch.kt')
 
+if os.environ.get('CATPPUCCIN_INCLUDE_NYT_GAMES') == '1':
+    SOURCES.append(ROOT / 'patches/src/main/kotlin/app/morphe/patches/nytgames/NytGamesPatches.kt')
+if os.environ.get('CATPPUCCIN_NYT_GAMES_TEST') == '1':
+    SOURCES.append(ROOT / 'test/nytgames/TestIdentityPatch.kt')
+
 # Maps is still a draft; include it only in explicitly requested local test builds.
 if os.environ.get('CATPPUCCIN_INCLUDE_MAPS') == '1':
     SOURCES.append(ROOT / 'patches/src/main/kotlin/app/morphe/patches/maps/theme/CatppuccinMapsPatch.kt')
@@ -140,12 +145,30 @@ def main():
     fastmail_dex = BUILD / 'fastmail-extension.zip'
     run(java, '-cp', d8, 'com.android.tools.r8.D8', '--release', '--min-api', '26',
         '--lib', android_jar, '--output', fastmail_dex, fastmail_jar)
+    nyt_dex = None
+    if os.environ.get('CATPPUCCIN_INCLUDE_NYT_GAMES') == '1':
+        nyt_classes = BUILD / 'nytgames-extension'
+        if nyt_classes.exists():
+            shutil.rmtree(nyt_classes)
+        nyt_classes.mkdir()
+        run(java_home / 'bin/javac', '-source', '8', '-target', '8', '-classpath', android_jar,
+            '-d', nyt_classes, *sorted((ROOT / 'tools/nytgames/src').rglob('*.java')))
+        nyt_jar = BUILD / 'nytgames-extension.jar'
+        with zipfile.ZipFile(nyt_jar, 'w') as archive:
+            for path in nyt_classes.rglob('*.class'):
+                archive.write(path, path.relative_to(nyt_classes))
+        nyt_dex = BUILD / 'nytgames-extension.zip'
+        run(java, '-cp', d8, 'com.android.tools.r8.D8', '--release', '--min-api', '32',
+            '--lib', android_jar, '--output', nyt_dex, nyt_jar)
     manifest = ('Manifest-Version: 1.0\nName: Morphe - Catppuccin\n'
         f'Description: Catppuccin themes for Boost, Gboard, AnkiDroid, Todoist, and Fastmail\nVersion: {BUNDLE_VERSION}\n'
         'Author: titandrive\nSource: https://github.com/titandrive/morphe-catppuccin\n'
         'License: GPL-3.0 with upstream NOTICE conditions\n\n')
     with zipfile.ZipFile(bundle, 'w', zipfile.ZIP_DEFLATED) as archive:
         archive.writestr('META-INF/MANIFEST.MF', manifest)
+        if nyt_dex:
+            with zipfile.ZipFile(nyt_dex) as extension:
+                archive.writestr('catppuccin/nytgames.dex', extension.read('classes.dex'))
         if fastmail_dex:
             with zipfile.ZipFile(fastmail_dex) as extension:
                 archive.writestr('catppuccin/fastmail.dex', extension.read('classes.dex'))
