@@ -53,3 +53,8 @@ if len(sys.argv) > 4:
  for name, value in original.items():
   assert canonical(colors[name]) == canonical(value), (name, colors[name], value)
  print(f'All {len(original)} original colors preserved')
+
+for variant, prefix in [('Latte', 'catppuccin_latte_'), ('Macchiato', 'catppuccin_macchiato_')]:
+ for attribute in ('colorAccent', 'android:colorAccent'):
+  assert styles['ThemeOverlay.Catppuccin.' + variant][attribute] == '@color/' + prefix + 'actionable_primary_idle_fill'
+print('Both refresh-spinner accent sources use mauve in custom themes')

@@ -140,6 +140,11 @@ private val todoistResources = resourcePatch {
                 val values = items(source).mapValues { (_, value) ->
                     value.replace("@color/todoist_", "@color/$prefix").replace("@color/dark_", "@color/$prefix")
                 }.toMutableMap()
+                // Pull-to-refresh alternates colorAccent with the semantic accent.
+                // The stock accent is a literal red, so color-token remapping alone
+                // leaves half of the spinner animation unthemed.
+                values["colorAccent"] = "@color/${prefix}actionable_primary_idle_fill"
+                values["android:colorAccent"] = "@color/${prefix}actionable_primary_idle_fill"
                 values["snackbarStyle"] = "@style/Widget.Catppuccin.Snackbar"
                 values["snackbarTextViewStyle"] = "@style/Widget.Catppuccin.Snackbar.TextView"
                 values["snackbarButtonStyle"] = "@style/Widget.Catppuccin.Snackbar.Button"
