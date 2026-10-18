@@ -5,6 +5,7 @@ The full upstream bundle still uses its original Gradle build. This focused
 build needs no GitHub Packages token and can be combined with that bundle.
 """
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -49,7 +50,17 @@ def run(*args):
     subprocess.run([str(arg) for arg in args], check=True, cwd=ROOT)
 
 
+def validate_release_notes(version, changelog):
+    if "-" in version:  # Local development bundles are not published updates.
+        return
+    sections = re.split(r"(?m)^#{1,2} ", changelog)
+    entry = next((section for section in sections if section.startswith(f"[{version}]")), None)
+    if entry is None or not re.search(r"(?m)^[-*] \*\*[^*]+:\*\*", entry):
+        raise ValueError(f"Release {version} needs app-scoped CHANGELOG.md bullets for Morphe update badges")
+
+
 def main():
+    validate_release_notes(BUNDLE_VERSION, (ROOT / 'CHANGELOG.md').read_text())
     CACHE.mkdir(parents=True, exist_ok=True)
     BUILD.mkdir(parents=True, exist_ok=True)
     java_home = Path(os.environ['JAVA_HOME'])
