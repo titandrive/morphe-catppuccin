@@ -26,6 +26,12 @@ SOURCES = [
 ]
 SOURCES.append(ROOT / 'patches/src/main/kotlin/app/morphe/patches/fastmail/CatppuccinFastmailPatch.kt')
 
+if os.environ.get('CATPPUCCIN_INCLUDE_INSTAGRAM') == '1':
+    SOURCES.append(ROOT / 'patches/src/main/kotlin/app/morphe/patches/instagram/InstagramPatches.kt')
+
+if os.environ.get('CATPPUCCIN_INSTAGRAM_TEST') == '1':
+    SOURCES.append(ROOT / 'test/instagram/TestIdentityPatch.kt')
+
 if os.environ.get('CATPPUCCIN_INCLUDE_NYT_GAMES') == '1':
     SOURCES.append(ROOT / 'patches/src/main/kotlin/app/morphe/patches/nytgames/NytGamesPatches.kt')
 if os.environ.get('CATPPUCCIN_NYT_GAMES_TEST') == '1':
@@ -145,6 +151,21 @@ def main():
     fastmail_dex = BUILD / 'fastmail-extension.zip'
     run(java, '-cp', d8, 'com.android.tools.r8.D8', '--release', '--min-api', '26',
         '--lib', android_jar, '--output', fastmail_dex, fastmail_jar)
+    instagram_dex = None
+    if os.environ.get('CATPPUCCIN_INCLUDE_INSTAGRAM') == '1':
+        instagram_classes = BUILD / 'instagram-extension'
+        if instagram_classes.exists():
+            shutil.rmtree(instagram_classes)
+        instagram_classes.mkdir()
+        run(java_home / 'bin/javac', '--release', '8', '-classpath', android_jar,
+            '-d', instagram_classes, *sorted((ROOT / 'tools/instagram/src').rglob('*.java')))
+        instagram_jar = BUILD / 'instagram-extension.jar'
+        with zipfile.ZipFile(instagram_jar, 'w') as archive:
+            for path in instagram_classes.rglob('*.class'):
+                archive.write(path, path.relative_to(instagram_classes))
+        instagram_dex = BUILD / 'instagram-extension.zip'
+        run(java, '-cp', d8, 'com.android.tools.r8.D8', '--release', '--min-api', '28',
+            '--lib', android_jar, '--output', instagram_dex, instagram_jar)
     nyt_dex = None
     if os.environ.get('CATPPUCCIN_INCLUDE_NYT_GAMES') == '1':
         nyt_classes = BUILD / 'nytgames-extension'
@@ -166,6 +187,9 @@ def main():
         'License: GPL-3.0 with upstream NOTICE conditions\n\n')
     with zipfile.ZipFile(bundle, 'w', zipfile.ZIP_DEFLATED) as archive:
         archive.writestr('META-INF/MANIFEST.MF', manifest)
+        if instagram_dex:
+            with zipfile.ZipFile(instagram_dex) as extension:
+                archive.writestr('catppuccin/instagram.dex', extension.read('classes.dex'))
         if nyt_dex:
             with zipfile.ZipFile(nyt_dex) as extension:
                 archive.writestr('catppuccin/nytgames.dex', extension.read('classes.dex'))
