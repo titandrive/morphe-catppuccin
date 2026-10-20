@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Build the standalone theme MPP using public Morphe and Kotlin artifacts.
 
-The full upstream bundle still uses its original Gradle build. This focused
-build needs no GitHub Packages token and can be combined with that bundle.
+This build needs no GitHub Packages token. Boost users apply the original
+Patcheddit bundle separately for API and login fixes.
 """
 import os
 import re
