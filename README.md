@@ -50,6 +50,8 @@ Keep the same Morphe signing key for updates. A Morphe-signed APK cannot install
 
 For a custom font, also select **Fastmail custom font**, open its options, and choose a **TTF file**. In **Display options → Accessibility → Custom font scale**, choose 70–150% to adjust its size; **Default (100%)** restores normal sizing. The scale is saved locally. Repatch an original APK to change or remove the font.
 
+Build instructions and contribution notes are in [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Vibe-code disclosure
 
 This project is vibe-coded with AI assistance from OpenAI Codex.
