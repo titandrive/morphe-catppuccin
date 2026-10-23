@@ -62,3 +62,11 @@ assert 'PocketSurfaces;->chapterProgress' in chapter
 for cls in ['eb8','o54']:
  assert 'PocketSurfaces;->loadNotes' in next(p.glob('smali*/'+cls+'.smali')).read_text()
 print('PASS: Up Next paint and both show-notes WebView hooks are present')
+
+aliases=list(manifest.iter('activity-alias'))
+assert aliases and all(n.get(ns+'name').startswith(package+'.') for n in aliases)
+assert any(n.get(ns+'name')==package+'.ui.MainActivityDefault' for n in aliases)
+for cls in ['eb8','hb8']:
+ assert 'PocketSurfaces;->notesSurfaceColor' in next(p.glob('smali*/'+cls+'.smali')).read_text()
+assert 'PocketSurfaces;->notesRoot' in next(p.glob('smali*/hb8.smali')).read_text()
+print('PASS: test icon aliases resolve in the test namespace; notes backgrounds are themed before first display')
