@@ -20,6 +20,10 @@ val pocketCastsTestIdentityPatch = bytecodePatch(name="Pocket Casts isolated tes
                     for(name in listOf("android:authorities","android:permission","android:readPermission","android:writePermission")) {
                         if(node.hasAttribute(name)) node.setAttribute(name,node.getAttribute(name).replace("au.com.shiftyjelly.pocketcasts", "au.com.shiftyjelly.pocketcasts.catppuccin.test"))
                     }
+                    if(node.tagName=="activity-alias") {
+                        val alias=node.getAttribute("android:name")
+                        node.setAttribute("android:name",alias.replace("au.com.shiftyjelly.pocketcasts.","au.com.shiftyjelly.pocketcasts.catppuccin.test."))
+                    }
                     if(node.tagName=="provider" && node.hasAttribute("android:authorities") && !node.getAttribute("android:authorities").startsWith("au.com.shiftyjelly.pocketcasts.catppuccin.test."))
                         node.setAttribute("android:authorities", "au.com.shiftyjelly.pocketcasts.catppuccin.test."+node.getAttribute("android:authorities"))
                     if(node.tagName in listOf("permission","uses-permission") && node.getAttribute("android:name").startsWith("au.com.shiftyjelly.pocketcasts.")) node.setAttribute("android:name",node.getAttribute("android:name").replace("au.com.shiftyjelly.pocketcasts", "au.com.shiftyjelly.pocketcasts.catppuccin.test"))

@@ -20,6 +20,14 @@ public final class PocketSurfaces {
     private static int surface(int variant) { return variant==1?0xffe6e9ef:variant==2?0xff1e2030:0xff0d1b11; }
     private static int base(int variant) { return variant==1?0xffeff1f5:variant==2?0xff24273a:0xff162f1e; }
     private static int accent(int variant) { return variant==1?0xff8839ef:variant==2?0xffc6a0f6:0xff88ff66; }
+    public static int notesSurfaceColor(View view,int original) {
+        int variant=variant(view);
+        return variant==0?original:base(variant);
+    }
+    public static View notesRoot(View view) {
+        if(view!=null && variant(view)!=0) view.setBackgroundColor(base(variant(view)));
+        return view;
+    }
     public static int surfaceColor(View view,int original) {
         int variant=variant(view);
         return variant==0?original:surface(variant);
@@ -69,7 +77,7 @@ public final class PocketSurfaces {
             java.io.ByteArrayOutputStream output=new java.io.ByteArrayOutputStream()) {
             byte[] buffer=new byte[8192];int count;
             while((count=input.read(buffer))!=-1) output.write(buffer,0,count);
-            fontStyle="@font-face{font-family:PocketCustom;src:url(data:font/ttf;base64,"+
+            fontStyle="@font-face{font-family:PocketCustom;font-display:block;src:url(data:font/ttf;base64,"+
                 android.util.Base64.encodeToString(output.toByteArray(),android.util.Base64.NO_WRAP)+
                 ")}body,body *{font-family:PocketCustom!important}";
         } catch(java.io.IOException missing) { fontStyle=""; }

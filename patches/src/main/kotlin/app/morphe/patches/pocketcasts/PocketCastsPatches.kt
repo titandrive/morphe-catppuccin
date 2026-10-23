@@ -231,6 +231,26 @@ val pocketCastsThemePatch = bytecodePatch(
             }
             require(hooks>=5) { "Pocket Casts artwork surface layout changed: $type ($hooks hooks)" }
         }
+        var notesBackgrounds=0
+        for(type in listOf("Leb8;","Lhb8;")) for(method in mutableClassDefBy(type).methods) {
+            val changes=method.implementation?.instructions?.mapIndexedNotNull { index,instruction ->
+                val ref=(instruction as? ReferenceInstruction)?.reference as? MethodReference ?: return@mapIndexedNotNull null
+                if(ref.name!="setBackgroundColor" || ref.parameterTypes!=listOf("I")) return@mapIndexedNotNull null
+                index to (instruction as FiveRegisterInstruction)
+            }.orEmpty()
+            changes.reversed().forEach { (index,call) -> method.addInstructions(index,
+                "invoke-static {v${call.registerC}, v${call.registerD}}, $surfaces->notesSurfaceColor(Landroid/view/View;I)I\nmove-result v${call.registerD}") }
+            notesBackgrounds+=changes.size
+        }
+        require(notesBackgrounds>=3) { "Pocket Casts notes backgrounds changed" }
+        val notesView=mutableClassDefBy("Lhb8;").methods.single { it.name=="L" && it.returnType=="Landroid/view/View;" }
+        val noteReturns=notesView.implementation!!.instructions.mapIndexedNotNull { index,instruction ->
+            if(instruction.opcode==com.android.tools.smali.dexlib2.Opcode.RETURN_OBJECT)
+                index to (instruction as OneRegisterInstruction).registerA else null
+        }
+        require(noteReturns.isNotEmpty()) { "Pocket Casts notes inflation changed" }
+        noteReturns.reversed().forEach { (index,register) -> notesView.addInstructions(index,
+            "invoke-static/range {v$register .. v$register}, $surfaces->notesRoot(Landroid/view/View;)Landroid/view/View;\nmove-result-object v$register") }
         val chapter=mutableClassDefBy("Lau/com/shiftyjelly/pocketcasts/player/view/ChapterProgressBar;").methods.single { it.name=="onDraw" }
         chapter.addInstructions(0,"invoke-static/range {p0 .. p0}, $surfaces->chapterProgress(Landroid/view/View;)V")
         val player=mutableClassDefBy("Lfh9;").methods.single { it.name=="<init>" }
