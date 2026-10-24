@@ -52,7 +52,7 @@ For a custom font, also select **Fastmail custom font**, open its options, and c
 
 ## Pocket Casts
 
-For **Pocket Casts 8.23-rc-1**, select **Pocket Casts themes** in Morphe. In **Profile → Settings → Appearance**, choose **Catppuccin Latte**, **Catppuccin Macchiato**, or **Radioactivity**. The original themes remain available.
+For **Pocket Casts 8.23-rc-1**, select **Pocket Casts themes** in Morphe. In **Profile → Settings → Appearance**, choose **Catppuccin Latte**, **Catppuccin Macchiato**, or **Radioactivity**. The original themes remain available. As a bonus, **Radioactivity** restores Pocket Casts’ original Fallout-inspired theme, removed from newer versions.
 
 Optionally select **Pocket Casts custom font**, open its options, and choose a **TTF file**. It applies to the interface and show notes. Repatch an original APK to change or remove the font.
 
