@@ -25,7 +25,9 @@ public final class LinkProbe extends android.app.Activity {
             int selected = getIntent().getIntExtra("theme", 18);
             preferences.edit().putString("pref_theme", String.valueOf(selected))
                 .putString("pref_theme_night", String.valueOf(selected)).putInt("pref_theme_mode", 0)
-                .putBoolean("pref_dynamic_colors", false).commit();
+                .putBoolean("pref_dynamic_colors", true).commit();
+            BoostTheme.selectTheme(this, selected);
+            check(!preferences.getBoolean("pref_dynamic_colors", true), "Catppuccin selection must disable dynamic colors");
             check(BoostTheme.mode() == selected, "Probe must run with the requested theme enabled");
             android.widget.TextView view = new android.widget.TextView(this);
             String url = "https://example.invalid/catppuccin-probe/" + System.nanoTime();
@@ -33,9 +35,9 @@ public final class LinkProbe extends android.app.Activity {
             android.text.Spanned styled = (android.text.Spanned) BoostTheme.links(view, source);
             check(color(styled) == BoostTheme.link(0), "Unvisited link must be blue");
             BoostTheme.visitLink(this, url);
-            check(color(styled) == BoostTheme.accent(0), "Visited link must be mauve immediately");
+            check(color(styled) == BoostTheme.secondary(0), "Visited link must be grey immediately");
             android.text.Spanned rebound = (android.text.Spanned) BoostTheme.links(view, source);
-            check(color(rebound) == BoostTheme.accent(0), "Visited color must survive rebinding");
+            check(color(rebound) == BoostTheme.secondary(0), "Visited color must survive rebinding");
             android.text.Spanned spoiler = android.text.Html.fromHtml("<a href='spoiler://hidden'>Spoiler</a>");
             android.text.style.URLSpan original = spoiler.getSpans(0, spoiler.length(), android.text.style.URLSpan.class)[0];
             android.text.Spanned unchanged = (android.text.Spanned) BoostTheme.links(view, spoiler);
@@ -44,10 +46,11 @@ public final class LinkProbe extends android.app.Activity {
             android.text.Spanned persisted = (android.text.Spanned) BoostTheme.links(view,
                 android.text.Html.fromHtml("<a href='" + persistent + "'>Persist</a>"));
             if (getIntent().getBooleanExtra("check-persistence", false))
-                check(color(persisted) == BoostTheme.accent(0), "Visited color must survive process restart");
+                check(color(persisted) == BoostTheme.secondary(0), "Visited color must survive process restart");
             BoostTheme.visitLink(this, persistent);
-            view.setText(styled); setContentView(view);
-            android.util.Log.i("CatppuccinLinkProbe", "PASS blue, mauve, rebinding, spoilers, persistence=" + getIntent().getBooleanExtra("check-persistence", false));
+            if (getIntent().getBooleanExtra("headless", false)) finish();
+            else { view.setText(styled); setContentView(view); }
+            android.util.Log.i("CatppuccinLinkProbe", "PASS blue, grey, rebinding, spoilers, persistence=" + getIntent().getBooleanExtra("check-persistence", false));
         } catch (Throwable failure) {
             android.util.Log.e("CatppuccinLinkProbe", "FAIL", failure);
         }
