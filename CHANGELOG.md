@@ -1,3 +1,9 @@
+# [0.8.1](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.8.1) (2026-11-05)
+
+### Updates
+
+* **Immich:** Support the verified 3.3.6 arm64 APK for Catppuccin Latte/Macchiato and custom TTF fonts, keeping mauve selected labels and the Mantle dock. Retain 3.3.5 support and strict native-binary checks.
+
 # [0.8.0](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.8.0) (2026-10-24)
 
 ### Features
