@@ -1,3 +1,9 @@
+# [0.9.1](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.9.1) (2026-11-06)
+
+### Updates
+
+* **Boost:** Increase Catppuccin comment-level indicators from 2 dp to 3 dp on Boost 1.14.2. Keep the approved post separators and comment colors.
+
 # [0.9.0](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.9.0) (2026-11-06)
 
 ### Updates
