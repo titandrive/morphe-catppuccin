@@ -12,6 +12,9 @@ import android.widget.RemoteViews;
 public final class WidgetTheme {
     static final String OPACITY="catppuccin_widget_opacity";
     private static Context app;
+    private static android.graphics.Typeface widgetFont;
+    private static final java.util.Map<RemoteViews,java.util.Map<Integer,String>> LABELS=java.util.Collections.synchronizedMap(new java.util.WeakHashMap<RemoteViews,java.util.Map<Integer,String>>());
+    private static final java.util.Map<RemoteViews,java.util.Map<Integer,Float>> SIZES=java.util.Collections.synchronizedMap(new java.util.WeakHashMap<RemoteViews,java.util.Map<Integer,Float>>());
     private static final android.content.SharedPreferences.OnSharedPreferenceChangeListener CHANGE=(prefs,key)-> {
         if(OPACITY.equals(key) || "appTheme".equals(key) || "dayTheme".equals(key) || "nightTheme".equals(key)) refreshAll();
     };
@@ -33,8 +36,36 @@ public final class WidgetTheme {
         return Math.max(0,Math.min(100,AnkiTheme.prefs(context).getInt(OPACITY,100)));
     }
     private static int id(String name) { return app.getResources().getIdentifier(name,"id",app.getPackageName()); }
+    public static void setTextViewText(RemoteViews views,int id,CharSequence value) {
+        synchronized(LABELS) { java.util.Map<Integer,String> labels=LABELS.get(views);if(labels==null){labels=new java.util.HashMap<>();LABELS.put(views,labels);}labels.put(id,value==null?"":value.toString()); }
+        views.setTextViewText(id,value);
+    }
+    public static void setTextViewTextSize(RemoteViews views,int id,int unit,float size) {
+        if(app!=null) synchronized(SIZES) {java.util.Map<Integer,Float> sizes=SIZES.get(views);if(sizes==null){sizes=new java.util.HashMap<>();SIZES.put(views,sizes);}sizes.put(id,android.util.TypedValue.applyDimension(unit,size,app.getResources().getDisplayMetrics()));}
+        views.setTextViewTextSize(id,unit,size);
+    }
     private static void text(RemoteViews views,String name,int color) {
-        int id=id(name);if(id!=0)views.setTextColor(id,color);
+        int id=id(name);if(id==0)return;
+        String value;
+        synchronized(LABELS){java.util.Map<Integer,String> labels=LABELS.get(views);value=labels==null?null:labels.get(id);}
+        int image=id("catppuccin_widget_text_"+name);
+        if(value==null || image==0){views.setTextColor(id,color);return;}
+        boolean bold=name.contains("card_analysis") || name.equals("deckNameCardAnalysis");
+        float sp=bold?24:name.equals("deckName")?22:name.startsWith("deck")?20:18;
+        float size=android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_SP,sp,app.getResources().getDisplayMetrics());
+        synchronized(SIZES){java.util.Map<Integer,Float> sizes=SIZES.get(views);if(sizes!=null && sizes.containsKey(id))size=sizes.get(id);}
+        if(widgetFont==null)widgetFont=android.graphics.Typeface.createFromAsset(app.getAssets(),"catppuccin/anki/JetBrainsMono-Regular.ttf");
+        android.text.TextPaint paint=new android.text.TextPaint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+        paint.setTypeface(android.graphics.Typeface.create(widgetFont,bold?android.graphics.Typeface.BOLD:android.graphics.Typeface.NORMAL));paint.setTextSize(size);paint.setColor(android.graphics.Color.WHITE);
+        String display=android.text.TextUtils.ellipsize(value,paint,Math.min(1600,app.getResources().getDisplayMetrics().widthPixels),android.text.TextUtils.TruncateAt.END).toString();
+        android.graphics.Paint.FontMetrics metrics=paint.getFontMetrics();
+        int width=Math.max(1,(int)Math.ceil(paint.measureText(display))+4),height=Math.max(1,(int)Math.ceil(metrics.descent-metrics.ascent)+4);
+        android.graphics.Bitmap bitmap=android.graphics.Bitmap.createBitmap(width,height,android.graphics.Bitmap.Config.ALPHA_8);
+        bitmap.setDensity(app.getResources().getDisplayMetrics().densityDpi);
+        new android.graphics.Canvas(bitmap).drawText(display,2,2-metrics.ascent,paint);
+        views.setTextColor(id,android.graphics.Color.TRANSPARENT);
+        views.setImageViewBitmap(image,bitmap);
+        views.setInt(image,"setColorFilter",color);
     }
     private static void clear(RemoteViews views,String name) {
         int id=id(name);if(id!=0)views.setInt(id,"setBackgroundResource",0);

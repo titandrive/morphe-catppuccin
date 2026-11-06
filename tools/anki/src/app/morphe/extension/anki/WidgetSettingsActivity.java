@@ -49,10 +49,10 @@ public final class WidgetSettingsActivity extends Activity {
         remote.setViewVisibility(id("empty_widget"),View.GONE);
         remote.setViewVisibility(id("cardAnalysisDataHolder"),View.VISIBLE);
         remote.setViewVisibility(id("deckNameCardAnalysis"),View.VISIBLE);
-        remote.setTextViewText(id("deckNameCardAnalysis"),"Sample deck");
-        remote.setTextViewText(id("deckNew_card_analysis_widget"),"12");
-        remote.setTextViewText(id("deckLearn_card_analysis_widget"),"5");
-        remote.setTextViewText(id("deckDue_card_analysis_widget"),"23");
+        WidgetTheme.setTextViewText(remote,id("deckNameCardAnalysis"),"Sample deck");
+        WidgetTheme.setTextViewText(remote,id("deckNew_card_analysis_widget"),"12");
+        WidgetTheme.setTextViewText(remote,id("deckLearn_card_analysis_widget"),"5");
+        WidgetTheme.setTextViewText(remote,id("deckDue_card_analysis_widget"),"23");
         preview.removeAllViews();preview.addView(WidgetTheme.theme(remote).apply(this,preview),new FrameLayout.LayoutParams(-1,-1));
     }
     private int id(String name){return getResources().getIdentifier(name,"id",getPackageName());}

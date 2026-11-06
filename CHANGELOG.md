@@ -1,3 +1,9 @@
+# [0.10.1](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.10.1) (2026-11-06)
+
+### Fixes
+
+* **AnkiDroid:** Fix JetBrains Mono in home-screen widgets. Render widget labels with the bundled font before passing them to the launcher, preserving original text accessibility and tap actions. Keep Catppuccin colors and background opacity.
+
 # [0.10.0](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.10.0) (2026-11-06)
 
 ### Updates
