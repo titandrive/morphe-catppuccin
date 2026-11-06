@@ -25,9 +25,30 @@ internal fun ResourcePatchContext.applyWidgetResources() {
         for(layout in directory.listFiles().orEmpty()) {
             if(layout.name !in widgetLayouts)continue
             document("res/${directory.name}/${layout.name}").use { xml ->
-                val text=xml.getElementsByTagName("TextView")
-                for(i in 0 until text.length) {
-                    (text.item(i) as Element).setAttribute("android:fontFamily","@font/catppuccin_widget_jetbrains")
+                val nodes=xml.getElementsByTagName("TextView")
+                val text=(0 until nodes.length).map { nodes.item(it) as Element }
+                for(label in text) {
+                    label.setAttribute("android:fontFamily","@font/catppuccin_widget_jetbrains")
+                    val id=label.getAttribute("android:id").substringAfter('/')
+                    val wrapper=xml.createElement("FrameLayout")
+                    val attributes=label.attributes
+                    val moved=(0 until attributes.length).map { attributes.item(it).nodeName }.filter { it.startsWith("android:layout_") }
+                    for(name in moved) { wrapper.setAttribute(name,label.getAttribute(name));label.removeAttribute(name) }
+                    label.setAttribute("android:layout_width","match_parent")
+                    label.setAttribute("android:layout_height","wrap_content")
+                    val parent=label.parentNode
+                    parent.replaceChild(wrapper,label);wrapper.appendChild(label)
+                    wrapper.appendChild(xml.createElement("ImageView").apply {
+                        setAttribute("android:id","@+id/catppuccin_widget_text_$id")
+                        setAttribute("android:layout_width","match_parent")
+                        setAttribute("android:layout_height","match_parent")
+                        setAttribute("android:scaleType","centerInside")
+                        setAttribute("android:importantForAccessibility","no")
+                        setAttribute("android:clickable","false")
+                        for(padding in listOf("padding","paddingLeft","paddingRight","paddingTop","paddingBottom","paddingStart","paddingEnd","paddingHorizontal","paddingVertical")) {
+                            if(label.hasAttribute("android:$padding"))setAttribute("android:$padding",label.getAttribute("android:$padding"))
+                        }
+                    })
                     labels++
                 }
             }
@@ -82,6 +103,8 @@ internal fun BytecodePatchContext.applyWidgetHooks() {
                     signature in listOf("ILandroid/widget/RemoteViews;","[ILandroid/widget/RemoteViews;","Landroid/content/ComponentName;Landroid/widget/RemoteViews;") -> {
                     updates++;"Landroid/appwidget/AppWidgetManager;"
                 }
+                ref.definingClass=="Landroid/widget/RemoteViews;" && ref.name=="setTextViewText" && signature=="ILjava/lang/CharSequence;" -> "Landroid/widget/RemoteViews;"
+                ref.definingClass=="Landroid/widget/RemoteViews;" && ref.name=="setTextViewTextSize" && signature=="IIF" -> "Landroid/widget/RemoteViews;"
                 ref.definingClass=="Landroid/widget/RemoteViews;" && ref.name in listOf("addView","addStableView") &&
                     signature in listOf("ILandroid/widget/RemoteViews;","ILandroid/widget/RemoteViews;I") -> {
                     children++;"Landroid/widget/RemoteViews;"
