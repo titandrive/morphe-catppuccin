@@ -14,6 +14,14 @@ public final class LinkProbe extends android.app.Activity {
         super.onCreate(state);
         try {
             android.content.SharedPreferences preferences = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
+            if (getIntent().getBooleanExtra("peek", false)) {
+                android.util.Log.i("CatppuccinLinkProbe", "STATE native=" + BoostTheme.mode()
+                    + " theme=" + preferences.getString("pref_theme", "unset")
+                    + " night=" + preferences.getString("pref_theme_night", "unset")
+                    + " mode=" + preferences.getInt("pref_theme_mode", -1)
+                    + " dynamic=" + preferences.getBoolean("pref_dynamic_colors", false));
+                finish(); return;
+            }
             int selected = getIntent().getIntExtra("theme", 18);
             preferences.edit().putString("pref_theme", String.valueOf(selected))
                 .putString("pref_theme_night", String.valueOf(selected)).putInt("pref_theme_mode", 0)
