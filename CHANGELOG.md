@@ -1,3 +1,10 @@
+# [0.11.0](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.11.0) (2026-11-06)
+
+### Updates
+
+* **Boost:** Support Boost 1.14.3 alongside compatible Patcheddit patches (tested with 2.1.0-dev.5). Keep support for 1.12.12 and 1.14.2, custom fonts, 3 dp comment indicators and single post separators.
+* **Boost:** Use Catppuccin blue for unvisited links and mauve for opened links in comments and text posts on 1.14.2/1.14.3. Save visited link history across restarts; preserve spoilers and stock themes.
+
 # [0.10.1](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.10.1) (2026-11-06)
 
 ### Fixes
