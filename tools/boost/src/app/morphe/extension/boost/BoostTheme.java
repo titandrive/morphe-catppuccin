@@ -84,7 +84,7 @@ public final class BoostTheme {
         }
         @Override public void updateDrawState(android.text.TextPaint paint) {
             original.updateDrawState(paint);
-            if (enabled()) paint.setColor(prefs.getStringSet("urls", java.util.Collections.<String>emptySet()).contains(key) ? accent(0) : link(0));
+            if (enabled()) paint.setColor(prefs.getStringSet("urls", java.util.Collections.<String>emptySet()).contains(key) ? secondary(0) : link(0));
         }
         @Override public void onClick(View widget) {
             visitLink(widget.getContext(), getURL());

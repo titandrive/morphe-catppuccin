@@ -15,7 +15,7 @@ adb logcat -d -s CatppuccinLinkProbe:I
 ```
 
 The probe selects Macchiato in the test app and checks blue unvisited links,
-mauve visited links, rebinding, spoiler preservation, and persistence across
+grey visited links, rebinding, spoiler preservation, and persistence across
 process restarts. Pass `--ei theme 17` to repeat in Latte. Also open the actual
 feed, a comment thread, and the image viewer: successful patching and DEX
 compilation alone do not prove every hooked class can load.
