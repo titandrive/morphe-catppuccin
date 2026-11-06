@@ -1,5 +1,5 @@
 {
-  "version": "0.9.1",
+  "version": "0.10.0",
   "patches": [
     {
       "name": "Catppuccin theme",
@@ -77,7 +77,7 @@
     },
     {
       "name": "AnkiDroid Catppuccin theme and fonts",
-      "description": "Replaces Light with Latte and Dark with Macchiato. Adds JetBrains Mono, custom TTF import, and font sizing under Appearance. Selected fonts override card template fonts.",
+      "description": "Catppuccin app and widget themes, bundled JetBrains Mono, custom TTF import, font sizing and widget background opacity.",
       "use": false,
       "dependencies": [],
       "compatiblePackages": {

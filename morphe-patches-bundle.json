@@ -1,6 +1,6 @@
 {
-  "version": "0.9.1",
-  "download_url": "https://github.com/titandrive/morphe-catppuccin/releases/download/catppuccin-v0.9.1/morphe-catppuccin-0.9.1.mpp",
-  "created_at": "2026-11-06T09:03:23",
-  "description": "Boost: increase Catppuccin comment-level indicators to 3 dp on 1.14.2."
+  "version": "0.10.0",
+  "download_url": "https://github.com/titandrive/morphe-catppuccin/releases/download/catppuccin-v0.10.0/morphe-catppuccin-0.10.0.mpp",
+  "created_at": "2026-11-06T09:29:20",
+  "description": "AnkiDroid: Catppuccin widgets with JetBrains Mono, matching card-count colors and adjustable background opacity."
 }
