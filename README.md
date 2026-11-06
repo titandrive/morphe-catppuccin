@@ -60,7 +60,7 @@ Use an original APK, not a previously patched copy. Keep the same Morphe signing
 
 ## Immich
 
-For **Immich 3.3.5 (arm64)**, select **Immich Catppuccin**. The app’s light and dark modes use **Latte** and **Macchiato**, with mauve selected tab icons and labels and a darker Mantle dock in dark mode. This replaces the existing palettes; it does not add theme picker entries. The patch checks the exact native binary and rejects other builds.
+For **Immich 3.3.5 or 3.3.6 (arm64)**, select **Immich Catppuccin**. The app’s light and dark modes use **Latte** and **Macchiato**, with mauve selected tab icons and labels and a darker Mantle dock in dark mode. This replaces the existing palettes; it does not add theme picker entries. The patch checks the exact native binary and rejects other builds.
 
 Optionally select **Immich custom font**, open its options, and choose a **TTF file**. It replaces interface fonts while preserving icons. Repatch an original APK to change or remove the font. Keep the same Morphe signing key for updates.
 

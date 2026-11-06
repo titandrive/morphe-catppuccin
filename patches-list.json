@@ -1,5 +1,5 @@
 {
-  "version": "0.8.0",
+  "version": "0.8.1",
   "patches": [
     {
       "name": "Catppuccin theme",
@@ -196,12 +196,13 @@
     },
     {
       "name": "Immich Catppuccin",
-      "description": "Replaces light and dark palettes with Latte and Macchiato; selected tab icons and labels use mauve. Supports the verified 3.3.5 arm64 build.",
+      "description": "Replaces light and dark palettes with Latte and Macchiato; selected tab icons and labels use mauve. Supports the verified 3.3.5 and 3.3.6 arm64 builds.",
       "use": false,
       "dependencies": [],
       "compatiblePackages": {
         "app.alextran.immich": [
-          "3.3.5"
+          "3.3.5",
+          "3.3.6"
         ]
       },
       "options": []
@@ -213,7 +214,8 @@
       "dependencies": [],
       "compatiblePackages": {
         "app.alextran.immich": [
-          "3.3.5"
+          "3.3.5",
+          "3.3.6"
         ]
       },
       "options": [
