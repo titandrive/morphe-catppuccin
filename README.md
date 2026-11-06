@@ -26,6 +26,8 @@ For **AnkiDroid 2.25.1 or 2.25.2**, apply **AnkiDroid Catppuccin theme and fonts
 
 In **Settings → Appearance**, choose **Catppuccin Latte** as the day theme and **Catppuccin Macchiato** as the night theme. **Font and text size** offers App default, bundled JetBrains Mono, a custom TTF picker, and 70–150% text scaling. Selected fonts override card template fonts in study and preview screens; App default restores the original fonts.
 
+**Widget appearance** adds Catppuccin widget colors, JetBrains Mono and 0–100% background opacity with a preview. Deck names use the theme text color; new, learning and review counts use Catppuccin blue, red and green. The opacity setting applies to widget backgrounds only.
+
 Start with an **original, unpatched APK** when updating. Morphe signs the result with its own key, so it cannot install directly over a Google Play/GitHub-signed AnkiDroid installation. Back up/sync your collection before switching installations, and keep using the same Morphe signing key for subsequent updates. AnkiCat remains a separate app.
 
 ## Todoist

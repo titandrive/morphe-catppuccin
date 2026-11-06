@@ -1,3 +1,10 @@
+# [0.10.0](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.10.0) (2026-11-06)
+
+### Updates
+
+* **AnkiDroid:** Theme home-screen widgets with Catppuccin Latte/Macchiato, light deck-name text in dark mode, and matching blue/red/green card counts. Bundle JetBrains Mono for widget text.
+* **AnkiDroid:** Add Appearance → Widget appearance with a 0–100% background-opacity control and preview. Keep text fully visible and refresh existing widgets when opacity or theme changes.
+
 # [0.9.1](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.9.1) (2026-11-06)
 
 ### Updates
