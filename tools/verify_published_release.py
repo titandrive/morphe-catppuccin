@@ -2,6 +2,7 @@
 """Check the public source channels after publishing, before announcing a release."""
 import argparse
 import datetime
+import gzip
 import json
 import re
 import urllib.request
@@ -17,8 +18,13 @@ def verify(version, app):
 
         def read(name):
             # Use the same public URLs as Morphe, including the CDN cache.
-            with urllib.request.urlopen(base + name, timeout=30) as response:
-                return response.read().decode('utf-8')
+            # Morphe uses OkHttp's transparent gzip; verify the same CDN variant.
+            request = urllib.request.Request(base + name, headers={'Accept-Encoding': 'gzip'})
+            with urllib.request.urlopen(request, timeout=30) as response:
+                body = response.read()
+                if response.headers.get('Content-Encoding') == 'gzip':
+                    body = gzip.decompress(body)
+                return body.decode('utf-8')
 
         for name in ('patches-bundle.json', 'morphe-patches-bundle.json'):
             manifest = json.loads(read(name))
