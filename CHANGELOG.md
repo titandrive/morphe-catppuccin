@@ -1,3 +1,10 @@
+# [0.9.0](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.9.0) (2026-11-06)
+
+### Updates
+
+* **Boost:** Support 1.14.2 alongside 1.12.12 for separate Catppuccin Latte/Macchiato themes and custom TTF fonts. Apply alongside compatible Patcheddit patches using an original APK.
+* **Boost:** Restore themed navigation, media viewers, flair, username badges, Follow buttons, refresh indicators, text-post panels and profile patterns. Use 2 dp colored comment indicators and single surface0 post separators; fix media-viewer crashes while preserving stock themes.
+
 # [0.8.1](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.8.1) (2026-11-05)
 
 ### Updates
