@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check the public source channels after publishing, before announcing a release."""
 import argparse
+import datetime
 import json
 import re
 import urllib.request
@@ -21,6 +22,9 @@ def verify(version, app):
 
         for name in ('patches-bundle.json', 'morphe-patches-bundle.json'):
             manifest = json.loads(read(name))
+            # Morphe's ReleaseAsset uses Java LocalDateTime.parse, not Instant:
+            # offsets and trailing Z make the whole source Metadata N/A.
+            datetime.datetime.strptime(manifest['created_at'], '%Y-%m-%dT%H:%M:%S')
             assert manifest['version'] == version, (branch, name, manifest['version'])
             assert manifest['download_url'] == expected_url, (branch, name, 'download URL')
         listing = json.loads(read('patches-list.json'))
