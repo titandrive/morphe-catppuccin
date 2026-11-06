@@ -25,7 +25,7 @@ public final class BoostTheme {
     public static int secondary(int original) { return color(original, 0xff6c6f85, 0xffa5adcb); }
     public static int header(int original) { return color(original, 0xffccd0da, 0xff1e2030); }
     public static int indentWidth(View view, int original) {
-        return enabled() && original>0 ? Math.max(1,Math.round(2*view.getResources().getDisplayMetrics().density)) : original;
+        return enabled() && original>0 ? Math.max(1,Math.round(3*view.getResources().getDisplayMetrics().density)) : original;
     }
     public static int divider(View view, int original) {
         return color(original, 0xff9ca0b0, 0xff363a4f);
