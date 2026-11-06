@@ -19,6 +19,12 @@ public final class BoostTheme {
         int mode = mode();
         return mode == 17 ? latte : mode == 18 ? macchiato : original;
     }
+    public static void selectTheme(Activity activity, int requested) {
+        if (requested == 17 || requested == 18) {
+            android.preference.PreferenceManager.getDefaultSharedPreferences(activity).edit()
+                .putBoolean("pref_dynamic_colors", false).apply();
+        }
+    }
     public static int link(int original) { return color(original, 0xff1e66f5, 0xff8aadf4); }
     // Keep URL history private to this installation; never retain a screen.
     private static final java.util.WeakHashMap<android.widget.TextView, Boolean> linkViews = new java.util.WeakHashMap<>();

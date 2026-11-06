@@ -112,6 +112,9 @@ internal fun BytecodePatchContext.applyModernBoostTheme() {
     val openLink=linkListener.implementation!!.instructions.indexOfFirst { it.opcode==Opcode.INVOKE_STATIC }
     require(openLink>=0) { "Boost link click handler changed" }
     linkListener.addInstructions(openLink,"invoke-static/range {p0 .. p1}, $modernExt->visitLink(Landroid/content/Context;Ljava/lang/String;)V")
+    mutableClassDefBy("Lcom/rubenmayayo/reddit/ui/activities/ThemeActivity;")
+        .methods.single { it.name=="d1" && it.parameterTypes==listOf("I") }
+        .addInstructions(0,"invoke-static/range {p0 .. p1}, $modernExt->selectTheme(Landroid/app/Activity;I)V")
     val utils=mutableClassDefBy(themeUtils)
     val init=utils.methods.single { it.name=="<clinit>" }
     val code=StringBuilder()
