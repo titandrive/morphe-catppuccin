@@ -4,10 +4,22 @@ package app.morphe.patches.reddit.customclients.boostforreddit.theme
 import app.morphe.patcher.patch.ResourcePatchContext
 import app.morphe.patcher.patch.BytecodePatchContext
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
+import app.morphe.patcher.extensions.InstructionExtensions.addInstruction
 import com.android.tools.smali.dexlib2.Opcode
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.NarrowLiteralInstruction
 import app.morphe.patcher.extensions.InstructionExtensions.replaceInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.TwoRegisterInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction
+import com.android.tools.smali.dexlib2.iface.reference.MethodReference
+import com.android.tools.smali.dexlib2.iface.reference.FieldReference
+import com.android.tools.smali.dexlib2.immutable.ImmutableMethod
+import com.android.tools.smali.dexlib2.immutable.ImmutableMethodParameter
+import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
+import com.android.tools.smali.dexlib2.AccessFlags
+import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod.Companion.toMutable
+import app.morphe.patcher.extensions.InstructionExtensions.addInstructionsWithLabels
 import org.w3c.dom.Element
 import javax.xml.parsers.DocumentBuilderFactory
 
@@ -31,6 +43,24 @@ internal fun ResourcePatchContext.applyModernBoostResources() {
             for (i in 0 until nodes.length) {
                 val node = nodes.item(i) as? Element ?: continue
                 require(names.add(node.getAttribute("name"))) { "Use an original Boost APK; Catppuccin resources already exist." }
+                if (node.tagName=="style") {
+                    val name=node.getAttribute("name")
+                    if(name=="Catppuccin.Latte" || name=="Catppuccin.Macchiato") {
+                        val flavor=if(name.endsWith("Latte")) "latte" else "macchiato"
+                        for(attr in listOf("colorSurfaceContainer", "colorSurfaceContainerLow", "colorSurfaceContainerHigh")) {
+                            node.appendChild(source.createElement("item").apply {
+                                setAttribute("name",attr);textContent="@color/catppuccin_${flavor}_mantle"
+                            })
+                        }
+                    }
+                    if(name.startsWith("Catppuccin.") && (name.endsWith(".Card") || name.endsWith(".FullCard") || name.endsWith(".MiniCard"))) {
+                        val items=node.getElementsByTagName("item")
+                        for(j in 0 until items.length) {
+                            val item=items.item(j) as Element
+                            if(item.getAttribute("name")=="strokeWidth") item.textContent="0dp"
+                        }
+                    }
+                }
                 xml.documentElement.appendChild(xml.importNode(node,true))
             }
         }
@@ -129,10 +159,245 @@ internal fun BytecodePatchContext.applyModernBoostTheme() {
         menu.replaceInstruction(i,"invoke-static {p1}, $modernExt->tintMenu(Landroid/view/Menu;)V")
         menu.addInstructions(i+1,"return v$reg")
     }
-    val media=mutableClassDefBy("Lcom/rubenmayayo/reddit/ui/activities/MediaActivity;").methods.single { it.name=="onCreate" }
-    val mediaReturns=media.implementation!!.instructions.mapIndexedNotNull { i,ins -> if(ins.opcode==Opcode.RETURN_VOID) i else null }
-    for (i in mediaReturns.reversed()) {
-        media.replaceInstruction(i,"invoke-static/range {p0 .. p0}, $modernExt->media(Landroid/app/Activity;)V")
-        media.addInstructions(i+1,"return-void")
+    // Run after native media setup; the newer app reapplies AMOLED themes in
+    // several base classes and inflates each gallery page separately.
+    for(type in listOf("Ldi0;", "Lgq1;",
+        "Lcom/rubenmayayo/reddit/ui/activities/ImageActivity;",
+        "Lcom/rubenmayayo/reddit/ui/activities/ImageActivity2;",
+        "Lcom/rubenmayayo/reddit/ui/activities/MediaImageActivity;",
+        "Lcom/rubenmayayo/reddit/ui/activities/MediaVideoActivity;",
+        "Lcom/rubenmayayo/reddit/ui/activities/HDImageActivity;",
+        "Lcom/rubenmayayo/reddit/ui/activities/GalleryActivity;",
+        "Lcom/rubenmayayo/reddit/ui/activities/GalleryGridActivity;",
+        "Lcom/rubenmayayo/reddit/ui/activities/GifActivity;",
+        "Lcom/rubenmayayo/reddit/ui/activities/ExoActivity;")) {
+        val media=mutableClassDefBy(type).methods.single { it.name=="onCreate" }
+        val instructions=media.implementation!!.instructions.toList()
+        val receiver=media.implementation!!.registerCount-2
+        val clobber=instructions.indexOfFirst {
+            it.opcode.setsRegister() && it.opcode!=Opcode.CHECK_CAST &&
+                (it as? OneRegisterInstruction)?.registerA==receiver
+        }
+        val call="invoke-static/range {p0 .. p0}, $modernExt->media(Landroid/app/Activity;)V"
+        if(clobber>=0) {
+            // A move-result must remain immediately after its native invoke.
+            val site=if(instructions[clobber].opcode in listOf(Opcode.MOVE_RESULT,Opcode.MOVE_RESULT_OBJECT,Opcode.MOVE_RESULT_WIDE)) clobber-1 else clobber
+            val original=instructions[site]
+            media.replaceInstruction(site,call)
+            media.addInstruction(site+1,original)
+        } else {
+            val sites=instructions.mapIndexedNotNull { i,ins -> if(ins.opcode==Opcode.RETURN_VOID)i else null }
+            for(i in sites.reversed()) {
+                media.replaceInstruction(i,call)
+                media.addInstructions(i+1,"return-void")
+            }
+        }
     }
+    val fragment=mutableClassDefBy("Lcom/rubenmayayo/reddit/ui/fragments/imagemodel/ImageModelFragment;")
+        .methods.single { it.name=="onCreateView" }
+    val roots=fragment.implementation!!.instructions.mapIndexedNotNull { i,ins ->
+        if(ins.opcode==Opcode.RETURN_OBJECT) i to (ins as OneRegisterInstruction).registerA else null
+    }
+    for((i,reg) in roots.reversed()) {
+        fragment.replaceInstruction(i,"invoke-static/range {v$reg .. v$reg}, $modernExt->mediaView(Landroid/view/View;)Landroid/view/View;")
+        fragment.addInstructions(i+1,"move-result-object v$reg\nreturn-object v$reg")
+    }
+    val extension=mutableClassDefBy(modernExt)
+    fun helper(name:String, params:List<String>, registers:Int, code:String) {
+        extension.directMethods.add(ImmutableMethod(modernExt,name,
+            params.map { ImmutableMethodParameter(it, emptySet(),null) },"V",
+            AccessFlags.PUBLIC.value or AccessFlags.STATIC.value,null,null,
+            MutableMethodImplementation(registers)).toMutable().apply { addInstructionsWithLabels(0,code) })
+    }
+    fun endHook(type:String,name:String,call:String) {
+        val method=mutableClassDefBy(type).methods.single { it.name==name }
+        val sites=method.implementation!!.instructions.mapIndexedNotNull { i,ins -> if(ins.opcode==Opcode.RETURN_VOID)i else null }
+        require(sites.isNotEmpty()) { "Missing return: $type->$name" }
+        for(i in sites.reversed()) {method.replaceInstruction(i,call);method.addInstructions(i+1,"return-void")}
+    }
+    // Plain-line indentation builds its own gray array instead of using the
+    // preference palette. Apply the Catppuccin palette at bind time in all modes.
+    helper("indent",listOf("Lcom/rubenmayayo/reddit/ui/customviews/IndentView;"),2,"""
+        iget-object v0,p0,Lcom/rubenmayayo/reddit/ui/customviews/IndentView;->b:[I
+        invoke-static {v0}, $modernExt->depth([I)[I
+        move-result-object v0
+        iput-object v0,p0,Lcom/rubenmayayo/reddit/ui/customviews/IndentView;->b:[I
+        return-void
+    """)
+    mutableClassDefBy("Lcom/rubenmayayo/reddit/ui/customviews/IndentView;")
+        .methods.single { it.name=="setIndentLevel" }.addInstructions(0,
+            "invoke-static/range {p0 .. p0}, $modernExt->indent(Lcom/rubenmayayo/reddit/ui/customviews/IndentView;)V")
+    val indentConstructor=mutableClassDefBy("Lcom/rubenmayayo/reddit/ui/customviews/IndentView;")
+        .methods.single { it.name=="<init>" }
+    val indentInstructions=indentConstructor.implementation!!.instructions.toList()
+    for(i in indentInstructions.indices.reversed()) {
+        val ins=indentInstructions[i]
+        val field=(ins as? ReferenceInstruction)?.reference as? FieldReference ?: continue
+        if(ins.opcode!=Opcode.IPUT || field.name!="c" || field.definingClass!="Lcom/rubenmayayo/reddit/ui/customviews/IndentView;") continue
+        val registers=ins as TwoRegisterInstruction
+        indentConstructor.replaceInstruction(i,"invoke-static {v${registers.registerB},v${registers.registerA}}, $modernExt->indentWidth(Landroid/view/View;I)I")
+        indentConstructor.addInstructions(i+1,"move-result v${registers.registerA}")
+        indentConstructor.addInstruction(i+2,ins)
+    }
+    mutableClassDefBy("Lcom/google/android/material/divider/MaterialDivider;")
+        .methods.single { it.name=="setDividerColor" }.addInstructions(0,"""
+            invoke-static/range {p0 .. p1}, $modernExt->divider(Landroid/view/View;I)I
+            move-result p1
+        """)
+    val depth=mutableClassDefBy("Lps2;").methods.single { it.name=="D" }
+    val depthReturns=depth.implementation!!.instructions.mapIndexedNotNull { i,ins ->
+        if(ins.opcode==Opcode.RETURN_OBJECT)i to (ins as OneRegisterInstruction).registerA else null
+    }
+    for((i,r) in depthReturns.reversed()) {
+        depth.replaceInstruction(i,"invoke-static/range {v$r .. v$r}, $modernExt->depth([I)[I")
+        depth.addInstructions(i+1,"move-result-object v$r\nreturn-object v$r")
+    }
+    helper("usernameText",listOf("Landroid/widget/TextView;","I"),3,"""
+        invoke-static {p1}, $modernExt->badgeText(I)I
+        move-result p1
+        invoke-virtual {p0,p1}, Landroid/widget/TextView;->setTextColor(I)V
+        return-void
+    """)
+    for(role in 0..4) helper("username$role",listOf("Landroid/widget/TextView;","Landroid/graphics/drawable/Drawable;"),3,"""
+        const/4 v0, $role
+        invoke-static {p0,p1,v0}, $modernExt->username(Landroid/widget/TextView;Landroid/graphics/drawable/Drawable;I)V
+        return-void
+    """)
+    val author=mutableClassDefBy("Lcom/rubenmayayo/reddit/ui/adapters/CommentViewHolder;").methods.single { it.name=="w" }
+    val authorCode=author.implementation!!.instructions.toList()
+    for(i in authorCode.indices.reversed()) {
+        val ref=(authorCode[i] as? ReferenceInstruction)?.reference as? MethodReference ?: continue
+        val call=authorCode[i] as? FiveRegisterInstruction ?: continue
+        if(ref.name=="setTextColor") author.replaceInstruction(i,"invoke-static {v${call.registerC},v${call.registerD}}, $modernExt->usernameText(Landroid/widget/TextView;I)V")
+        if(ref.name=="setBackground") {
+            val field=(authorCode[i-1] as? ReferenceInstruction)?.reference as? FieldReference
+            val role=listOf("Y","X","Z","a0","b0").indexOf(field?.name)
+            require(role>=0) { "Unknown Boost author badge: $field" }
+            author.replaceInstruction(i,"invoke-static {v${call.registerC},v${call.registerD}}, $modernExt->username$role(Landroid/widget/TextView;Landroid/graphics/drawable/Drawable;)V")
+        }
+    }
+    endHook("Lcom/rubenmayayo/reddit/models/reddit/RichFlairView;","c","invoke-static/range {p0 .. p0}, $modernExt->flair(Landroid/view/View;)V")
+    endHook("Ljk3;","M","invoke-static/range {p1 .. p1}, $modernExt->postPanel(Landroid/view/View;)V")
+    val postConstructor=mutableClassDefBy("Lcom/rubenmayayo/reddit/ui/adapters/SubmissionViewHolder;")
+        .methods.single { it.name=="<init>" }
+    val postBind=postConstructor.implementation!!.instructions.indexOfFirst {
+        val ref=(it as? ReferenceInstruction)?.reference as? MethodReference
+        ref?.definingClass=="Lbutterknife/ButterKnife;" && ref.name=="bind"
+    }
+    require(postBind>=0)
+    postConstructor.addInstructions(postBind+1,"invoke-static/range {p1 .. p1}, $modernExt->postCard(Landroid/view/View;)V")
+
+    helper("follow",listOf("Lcom/google/android/material/chip/Chip;"),5,"""
+        invoke-static {}, $modernExt->mode()I
+        move-result v0
+        const/16 v1,17
+        if-eq v0,v1,:apply
+        const/16 v1,18
+        if-ne v0,v1,:done
+        :apply
+        const/4 v0,0
+        invoke-static {v0}, $modernExt->accent(I)I
+        move-result v0
+        invoke-static {v0}, Landroid/content/res/ColorStateList;->valueOf(I)Landroid/content/res/ColorStateList;
+        move-result-object v0
+        invoke-virtual {p0,v0}, Lcom/google/android/material/chip/Chip;->setChipBackgroundColor(Landroid/content/res/ColorStateList;)V
+        invoke-virtual {p0,v0}, Lcom/google/android/material/chip/Chip;->setChipStrokeColor(Landroid/content/res/ColorStateList;)V
+        const/4 v0,-1
+        invoke-static {v0}, $modernExt->badgeText(I)I
+        move-result v0
+        invoke-virtual {p0,v0}, Landroid/widget/TextView;->setTextColor(I)V
+        invoke-static {v0}, Landroid/content/res/ColorStateList;->valueOf(I)Landroid/content/res/ColorStateList;
+        move-result-object v0
+        invoke-virtual {p0,v0}, Lcom/google/android/material/chip/Chip;->setChipIconTint(Landroid/content/res/ColorStateList;)V
+        :done
+        return-void
+    """)
+    for(name in listOf("<init>","setColor","setSubscribed","i"))
+        endHook("Lcom/rubenmayayo/reddit/ui/customviews/SubscribeChip;",name,"invoke-static/range {p0 .. p0}, $modernExt->follow(Lcom/google/android/material/chip/Chip;)V")
+    helper("refresh",listOf("Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;","[I"),6,"""
+        invoke-static {}, $modernExt->mode()I
+        move-result v0
+        const/16 v1,17
+        if-eq v0,v1,:latte
+        const/16 v1,18
+        if-ne v0,v1,:original
+        const v0,0xffc6a0f6
+        const v1,0xff363a4f
+        goto :apply
+        :latte
+        const v0,0xff8839ef
+        const v1,0xffccd0da
+        :apply
+        invoke-virtual {p0,v1}, Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;->setProgressBackgroundColorSchemeColor(I)V
+        const/4 v1,1
+        new-array v1,v1,[I
+        const/4 v2,0
+        aput v0,v1,v2
+        invoke-virtual {p0,v1}, Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;->setColorSchemeColors([I)V
+        return-void
+        :original
+        invoke-virtual {p0,p1}, Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;->setColorSchemeResources([I)V
+        return-void
+    """)
+    for(type in listOf("ui/activities/WebViewActivity", "ui/comments/CommentsFragment",
+        "ui/fragments/SubmissionRecyclerViewFragment", "ui/friends/ImportantUsersFragment",
+        "ui/messages/fragment/ContributionListFragment", "ui/moderation/ModerationLogFragment",
+        "ui/moderation/ModerationListFragment", "ui/sidebar/MultiredditFragment",
+        "ui/profile/UserContributionListFragment", "ui/sidebar/TrendingFragment")) {
+        for(method in mutableClassDefBy("Lcom/rubenmayayo/reddit/$type;").methods) {
+            val instructions=method.implementation?.instructions?.toList() ?: continue
+            for((i,ins) in instructions.withIndex()) {
+                val ref=(ins as? ReferenceInstruction)?.reference as? MethodReference ?: continue
+                if(ref.definingClass!="Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;" || ref.name!="setColorSchemeResources")continue
+                val call=ins as FiveRegisterInstruction
+                method.replaceInstruction(i,"invoke-static {v${call.registerC},v${call.registerD}}, $modernExt->refresh(Landroidx/swiperefreshlayout/widget/SwipeRefreshLayout;[I)V")
+            }
+        }
+    }
+    // Tint only the account-header pattern, leaving avatars and downloaded images intact.
+    val drawer=mutableClassDefBy("Lxj0;")
+    var patternHooks=0
+    for(method in drawer.methods) {
+        val instructions=method.implementation?.instructions?.toList() ?: continue
+        for(i in instructions.indices.reversed()) {
+            val ref=(instructions[i] as? ReferenceInstruction)?.reference as? MethodReference ?: continue
+            if(ref.definingClass!="Lia1;" || ref.name!="b")continue
+            val call=instructions[i] as FiveRegisterInstruction
+            method.addInstructions(i+1,"invoke-static {v${call.registerD}}, $modernExt->pattern(Landroid/widget/ImageView;)V")
+            patternHooks++
+        }
+    }
+    require(patternHooks==1) { "Boost account pattern loader changed: $patternHooks" }
+    // Gallery pages are created lazily, including pages beyond the first image.
+    val pager=mutableClassDefBy("Lcom/rubenmayayo/reddit/ui/customviews/GalleryPagerView\$d;")
+        .methods.single { it.name=="f" }
+    val pageInstructions=pager.implementation!!.instructions.toList()
+    val inflate=pageInstructions.indexOfFirst {
+        val ref=(it as? ReferenceInstruction)?.reference as? MethodReference
+        ref?.definingClass=="Landroid/view/LayoutInflater;" && ref.name=="inflate"
+    }
+    require(inflate>=0)
+    val pageReg=(pageInstructions[inflate+1] as OneRegisterInstruction).registerA
+    pager.addInstructions(inflate+2,"invoke-static/range {v$pageReg .. v$pageReg}, $modernExt->mediaView(Landroid/view/View;)Landroid/view/View;")
+    for(name in listOf("ImageActivity","ImageActivity2","MediaImageActivity","GalleryActivity","GalleryGridActivity","GifActivity","ExoActivity")) {
+        val method=mutableClassDefBy("Lcom/rubenmayayo/reddit/ui/activities/$name;").methods.single { it.name=="onCreateOptionsMenu" }
+        val instructions=method.implementation!!.instructions.toList()
+        val menuRegister=method.implementation!!.registerCount-1
+        val clobber=instructions.indexOfFirst {
+            it.opcode.setsRegister() && it.opcode!=Opcode.CHECK_CAST &&
+                (it as? OneRegisterInstruction)?.registerA==menuRegister
+        }
+        val call="invoke-static/range {p1 .. p1}, $modernExt->tintMenu(Landroid/view/Menu;)V"
+        if(clobber>=0) {
+            val site=if(instructions[clobber].opcode in listOf(Opcode.MOVE_RESULT,Opcode.MOVE_RESULT_OBJECT,Opcode.MOVE_RESULT_WIDE))clobber-1 else clobber
+            val original=instructions[site]
+            method.replaceInstruction(site,call);method.addInstruction(site+1,original)
+        } else {
+            val sites=instructions.mapIndexedNotNull { i,ins -> if(ins.opcode==Opcode.RETURN)i to (ins as OneRegisterInstruction).registerA else null }
+            for((i,r) in sites.reversed()) {
+                method.replaceInstruction(i,call);method.addInstructions(i+1,"return v$r")
+            }
+        }
+    }
+
 }

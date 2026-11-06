@@ -54,6 +54,22 @@ val boostTestIdentityPatch = bytecodePatch(name="Boost isolated test identity",d
         // Set Macchiato once in this copy only; subsequent picker changes persist.
         mutableClassDefBy("Lps2;").methods.single {it.name=="R"}.addInstructionsWithLabels(0,"""
             iget-object v0, p0, Lps2;->a:Landroid/content/SharedPreferences;
+            const-string v1, "catppuccin_test_bars"
+            const/4 v2, 0
+            invoke-interface {v0, v1, v2}, Landroid/content/SharedPreferences;->getBoolean(Ljava/lang/String;Z)Z
+            move-result v2
+            if-nez v2, :bars_initialized
+            invoke-interface {v0}, Landroid/content/SharedPreferences;->edit()Landroid/content/SharedPreferences${'$'}Editor;
+            move-result-object v0
+            const-string v1, "pref_indent_style"
+            const-string v2, "0"
+            invoke-interface {v0, v1, v2}, Landroid/content/SharedPreferences${'$'}Editor;->putString(Ljava/lang/String;Ljava/lang/String;)Landroid/content/SharedPreferences${'$'}Editor;
+            const-string v1, "catppuccin_test_bars"
+            const/4 v2, 1
+            invoke-interface {v0, v1, v2}, Landroid/content/SharedPreferences${'$'}Editor;->putBoolean(Ljava/lang/String;Z)Landroid/content/SharedPreferences${'$'}Editor;
+            invoke-interface {v0}, Landroid/content/SharedPreferences${'$'}Editor;->apply()V
+            :bars_initialized
+            iget-object v0, p0, Lps2;->a:Landroid/content/SharedPreferences;
             const-string v1, "catppuccin_test_defaults"
             const/4 v2, 0
             invoke-interface {v0, v1, v2}, Landroid/content/SharedPreferences;->getBoolean(Ljava/lang/String;Z)Z
