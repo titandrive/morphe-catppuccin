@@ -1,3 +1,9 @@
+# [0.11.1](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.11.1) (2026-11-08)
+
+### Fixes
+
+* **AnkiDroid:** Fix the Deck Options crash when tapping a widget with no cards due.
+
 # [0.11.0](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.11.0) (2026-11-06)
 
 ### Updates
