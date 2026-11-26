@@ -1,3 +1,9 @@
+# [0.12.1](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.12.1) (2026-11-25)
+
+### Fixes
+
+* **Boost:** Theme inline post badges with rounded corners, matching Catppuccin colors and readable text. Keep badge labels together instead of splitting them into square blocks.
+
 # [0.12.0](https://github.com/titandrive/morphe-catppuccin/releases/tag/catppuccin-v0.12.0) (2026-11-25)
 
 ### Updates
