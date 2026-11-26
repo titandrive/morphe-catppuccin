@@ -298,6 +298,16 @@ internal fun BytecodePatchContext.applyModernBoostTheme() {
         invoke-static {p0,p1,v0}, $modernExt->username(Landroid/widget/TextView;Landroid/graphics/drawable/Drawable;I)V
         return-void
     """)
+    // Compact post metadata renders flair as inline text rather than RichFlairView.
+    val badgeText = mutableClassDefBy("Lcom/rubenmayayo/reddit/ui/customviews/BabushkaText;")
+        .methods.single { it.name == "i" && it.parameterTypes.isEmpty() }
+    val textAssignment = badgeText.implementation!!.instructions.withIndex().single { (_, instruction) ->
+        val ref = (instruction as? ReferenceInstruction)?.reference as? MethodReference
+        ref?.name == "setText" && ref.parameterTypes == listOf("Ljava/lang/CharSequence;")
+    }
+    val textRegisters = textAssignment.value as FiveRegisterInstruction
+    badgeText.replaceInstruction(textAssignment.index,
+        "invoke-static {v${textRegisters.registerC}, v${textRegisters.registerD}}, $modernExt->setBadgeText(Landroid/widget/TextView;Ljava/lang/CharSequence;)V")
     val author=mutableClassDefBy("Lcom/rubenmayayo/reddit/ui/adapters/CommentViewHolder;").methods.single { it.name=="w" }
     val authorCode=author.implementation!!.instructions.toList()
     for(i in authorCode.indices.reversed()) {
